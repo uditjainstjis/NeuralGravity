@@ -1,0 +1,53 @@
+# --- Environments & Dependencies ---
+venv/
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- OS Specific ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Research Data & Artifacts ---
+# Exclude raw extraction artifacts and XML dumps
+doc*.xml
+doc*_media/
+ocr_results.txt
+
+# Exclude large document binaries (keep the .md and .tex for source control)
+*.docx
+*.pdf
+
+# --- Logs & Performance Results ---
+# Exclude specific benchmark results to keep the repo lightweight
+# (Remove these if you want to track final results in Git)
+*.json
+*.csv
+reports/*.json
+reports/*.csv
+reports/current_status.txt
+
+# --- LaTeX Build Files ---
+# If you compile your ICLR submission locally
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+*.toc
+*.blg
+*.bbl
+
+# --- Machine Learning & Metal ---
+# Exclude local model weights or checkpoints if they are added later
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.joblib

@@ -1,0 +1,11 @@
+Prompt 1: Building a Custom MLX Evaluation Skill (The Benchmark Judge)
+
+"Initialize the Code Agent in Planning Mode. I want to create a custom global skill for model evaluation located at ~/.gemini/antigravity/skills/slm-evaluator/. Create a SKILL.md file that strictly instructs the agent on how to properly evaluate our fine-tuned MLX models against the MATH-500 and HumanEval+ datasets. The instructions must explicitly state to run the evaluations with the inference parameter enable_thinking=false to prove actual knowledge internalization. Alongside the markdown file, write a highly optimized Python script in the scripts/ subdirectory that parses the MLX generation outputs, calculates the final accuracy metric, and instruct the agent in the SKILL.md to automatically use this script and present the results in a formatted Markdown table."
+
+Prompt 2: The Speculative Cascade Pipeline Architect
+
+"Initialize a new workspace task in Turbo Terminal mode. Review the latest architecture patterns for 'Speculative Cascades'—the hybrid approach combining speculative decoding with cascading. Draft an implementation plan to integrate a Speculative Cascade pipeline into our existing MLX generation script. The drafter should be a highly quantized sub-1B model, and the target should be our fine-tuned 3B model. Write the custom Python execution script, ensuring you utilize the unified memory architecture of the M3 chip to keep both models loaded in RAM simultaneously without swapping. Test the script locally and generate an Artifact detailing the tokens-per-second speedup."
+
+Prompt 3: Automated Academic Synthesizer & LaTeX Typesetter
+
+"Initialize the Writing Agent. Act as a principal AI research scientist. Consume the evaluation artifacts generated from our latest SKIntern training run, as well as the Git code diffs of our custom rank-loss function. Cross-reference our results with the downloaded literature review on 'Small Language Models'. Draft the 'Experiments' and 'Methodology' sections of our double-blind ICLR 2026 paper in LaTeX. You must include a strict, paragraph-long Reproducibility Statement detailing our Apple MacBook M3 hardware setup, MLX framework version, and random seeds used during the local training loop."
