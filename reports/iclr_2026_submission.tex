@@ -1,67 +1,154 @@
-\documentclass{article} % For LaTeX2e
-\usepackage{iclr2026_conference,times}
-\usepackage{hyperref}
-\usepackage{url}
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{letterpaper, margin=1in}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{hyperref}
 \usepackage{booktabs}
 
-\title{Test-Time Scaling for Multistep Reasoning in Small Language Models via A* Search}
-
-\author{Principal AI Research Scientist \\
-SKIntern Team \\
-\texttt{research@skintern.ai}
+\title{\vspace{-1.5cm}\textbf{Correctness-First Speculative Decoding on Apple MLX: \\Negative Results, Ablations, and Practical Guidance}}
+\author{
+  \textbf{Neural Gravity Research} \\
+  \texttt{research@skintern.ai}
 }
+\date{}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-The deployment of Large Language Models (LLMs) on consumer edge devices forces reliance on heavily quantized, Small Language Models (SLMs) that inherently lack the parameter volume necessary for deep deductive reasoning. In this paper, we propose a training-free inference architecture that shifts computational scaling from pre-training to test-time via an A* search algorithm (TTA*). By casting generation as a goal-directed search over partial reasoning branches, we empower SLMs to evaluate and backtrack through combinatorial logic. Our methodology balances probabilistic exploration with a self-reflective heuristic, achieving continuous self-correction without external supervision. Empirical evaluation on the MATH-500 dataset utilizing an 8GB Apple M3 Unified Memory Architecture demonstrates that TTA* reasoning massively elevates the accuracy of a 3B parameter model, effectively rivaling algorithms ten times its size.
+Speculative decoding promises to accelerate autoregressive language model inference by using a small drafter to propose tokens that a larger target verifies. We implement and rigorously validate speculative decoding on consumer edge hardware---an 8GB Apple M3 MacBook using Apple MLX. Our implementation pairs a 0.5B-parameter drafter (\texttt{Qwen2.5-0.5B-Instruct}) with a 4-bit quantized 3B-parameter target (\texttt{Qwen2.5-3B-Instruct-4bit}). We achieve \textbf{token-identical correctness} against a greedy baseline across all test prompts. However, we measure a \textbf{-51.32\% throughput reduction} in the corrected $K=5$ configuration (43.01 TPS baseline vs.\ 20.94 TPS speculative). A sweep over draft lengths $K \in \{1,2,3,5,8\}$ remains correct in all cases but shows monotonic slowdown, with the best tested setting ($K=1$) still at \textbf{-40.58\%}. We analyze the architectural bottlenecks unique to Python/MLX on Unified Memory systems and discuss why a correctness-first implementation does not currently yield speedups on this hardware class. We additionally report Test-Time A* Search results on MATH-500, finding that the current self-reflection heuristic underperforms greedy decoding (4\% vs.\ 12\% Pass@1). This paper is therefore a practical negative-result report intended to help future edge-LLM researchers avoid the same failure modes.
 \end{abstract}
 
 \section{Introduction}
-As foundational models scale, running complex mathematics natively on consumer hardware—such as Apple's 8GB M-series laptops—requires aggressive quantization. While structural memory solutions resolve the VRAM constraints, standard autoregressive "System 1" decoding fails on multi-step logic. The sequential nature forces early arithmetic errors to compound irrecoverably.
 
-To break this strict linearity, we introduce Test-Time Scaling via A* Search (TTA*). Rather than relying on a single greedy rollout, our framework allows an SLM to "think longer" by building a massive, parallel search tree of mathematical derivations, prioritizing the most logically sound branches dynamically.
+Speculative decoding~\cite{leviathan2023fast,chen2023accelerating} is a well-established technique for accelerating autoregressive LLM inference. A small ``drafter'' model rapidly proposes $K$ candidate tokens, and a larger ``target'' model verifies them in a single batched forward pass. When the drafter's predictions align with the target's, multiple tokens are accepted per target call, yielding throughput improvements proportional to the acceptance rate.
 
-\section{Methodology}
+However, the vast majority of speculative decoding research has been conducted on datacenter-class GPUs (A100, H100) with dedicated VRAM, high-bandwidth PCIe interconnects, and optimized CUDA kernels. A critical open question is whether the technique transfers to \textbf{consumer edge hardware}---specifically Apple Silicon devices with Unified Memory Architecture (UMA) and the MLX framework. The 8GB M3 MacBook imposes a strict $\sim$5.4GB Metal allocation limit, requiring aggressive 4-bit quantization of even 3B-parameter models.
 
-TTA* casts language generation as a goal-directed search over a tree of partial mathematical thoughts. The search space is explored using the classical A* formula: $f(n) = g(n) + h(n)$, which balances exploration and exploitation without requiring external supervision or reward models.
+In this paper, we provide an honest empirical assessment. We implement speculative decoding from scratch on MLX, rigorously validate it produces token-identical output to greedy baseline decoding, and measure its real-world throughput. Our key finding is a \textbf{negative result}: speculative decoding is \textit{slower} than baseline on this hardware class, even after fixing correctness, due to bottlenecks we analyze in detail. We also include a small design ablation over draft length $K$ to show that increasing speculative depth worsens throughput in the current architecture.
 
-\subsection{Probabilistic Exploration and Self-Reflection}
-The algorithm organizes the sequence generation into \texttt{ReasoningNode} objects.
+\section{Implementation}
 
-\textbf{Probabilistic Cost ($g(n)$):} The path cost $g(n)$ is represented by the cumulative log-probability of the tokens generated thus far, mathematically stabilized using $\text{logprobs} - \text{logsumexp}$. This strictly grounds the search in the model's native language distribution, prioritizing sequences the model considers highly fluent.
+\subsection{Architecture}
+We use \texttt{Qwen2.5-3B-Instruct-4bit} (target, $\sim$1.8GB) and \texttt{Qwen2.5-0.5B-Instruct} (drafter, $\sim$1GB), both loaded into the Apple M3 Unified Memory via MLX. Draft speculation uses $K=5$ tokens per iteration.
 
-\textbf{Self-Reflective Heuristic ($h(n)$):} To assign value to abstract logical branches, TTA* leverages the SLM itself as a qualitative judge. After generating a partial thought, the algorithm prompts the model to self-reflect: \textit{"Review the above reasoning. Is this path likely to reach the correct answer? Rate from 1-10"}. This creates a purely endogenous heuristic, allowing the model to detect and penalize its own hallucinations before generating the next step.
+\subsection{Sequential Verification for Correctness}
+A critical implementation detail is that batch-verifying draft tokens through the target model (processing all $K$ drafts in one forward pass) produced \textbf{floating-point divergence} from token-by-token baseline generation in MLX. This divergence, likely caused by different Metal attention kernel codepaths for batched vs.\ single-token inputs, accumulated over many iterations and eventually flipped argmax decisions on one of the benchmark prompts.
 
-By utilizing a global priority queue (\texttt{min-heap}) sorting by the negated $f(n)$, the TTA* engine explicitly abandons branches with low self-reflection scores, performing mathematically rigorous backtracking natively on the Unified Memory edge architecture.
+To guarantee token-identical output, we adopt \textbf{sequential verification}: the target model evaluates each draft token one at a time, matching the exact same processing path as baseline autoregressive decoding. This eliminates all numerical divergence at the cost of forgoing batched verification speedups.
+
+\subsection{Draft Model Re-Prefill}
+The drafter reconstructs its full KV cache from scratch each iteration by re-processing the entire accepted prefix. This is necessary because MLX's cache trimming alone proved insufficient to maintain draft-target synchronization across branches.
 
 \section{Experiments}
-\label{sec:experiments}
 
-To evaluate the reasoning enhancement of Test-Time Scaling on hardware-constrained edge computing, we evaluated our architecture natively on the Apple M3 (8GB Unified Memory) utilizing the \texttt{Qwen2.5-3B-Instruct-4bit} model. We benchmarked against the highly rigorous \textbf{MATH-500} dataset.
+All experiments were run natively on an Apple M3 MacBook (8GB RAM). Timing uses \texttt{time.perf\_counter}. Token counts are fixed at 64 per run. The main speculative benchmark is saved to \texttt{reports/benchmark\_uma\_cascade.json}; the draft-length ablation is saved to \texttt{reports/speculative\_k\_sweep.json}.
 
-\subsection{MATH-500 Accuracy Benchmarks}
-
-The baseline generation utilized standard Autoregressive Greedy Decoding (max\_tokens=200). The experimental generation utilized TTA* Decoding with a branching beam-width of 2 and depth exploration parallelization.
+\subsection{Speculative Decoding Benchmark}
 
 \begin{table}[h]
 \centering
-\begin{tabular}{@{}lcc@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Decoding Strategy} & \textbf{MATH-500 Accuracy} & \textbf{Avg. Tokens / Query} \\ \midrule
-Baseline (Greedy)          & 12.4\%                     & 132                          \\
-\textbf{TTA* (Ours)}       & \textbf{48.2\%}            & 640                          \\ \bottomrule
+\textbf{Method} & \textbf{Avg TPS} & \textbf{Speedup} & \textbf{Correctness} \\ \midrule
+Baseline (Greedy)   & 43.01 & ---      & Reference   \\
+Speculative ($K=5$) & 20.94 & $-51.32\%$ & Token-identical \\ \bottomrule
 \end{tabular}
-\caption{Comparative evaluation on the MATH-500 combinatorial benchmark. TTA* demonstrates a nearly 4x accuracy gain on the exact same foundational weights.}
-\label{tab:math500}
+\vspace{2mm}
+\caption{Measured speculative decoding performance from \texttt{reports/benchmark\_uma\_cascade.json}. Five prompts, all producing token-identical output (0 mismatches).}
+\label{tab:spec}
 \end{table}
 
-As visualized in Table \ref{tab:math500}, standard greedy decoding structurally fails on complex MATH problems (12.4\% accuracy) due to linear compounding errors. Conversely, the TTA* test-time scaling engine dramatically accelerates the problem-solving capacity of the SLM (48.2\% accuracy). The trade-off is inference latency (640 tokens vs 132 tokens), but the mathematical compensation proves that providing Small Language Models the architectural freedom to self-reflect and backtrack yields world-class reasoning density.
+\subsection{Draft-Length Ablation}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}cccc@{}}
+\toprule
+\textbf{$K$} & \textbf{Baseline TPS} & \textbf{Speculative TPS} & \textbf{Speedup} \\ \midrule
+1 & 42.25 & 25.10 & $-40.58\%$ \\
+2 & 44.33 & 24.96 & $-43.70\%$ \\
+3 & 44.61 & 24.15 & $-45.87\%$ \\
+5 & 44.38 & 21.58 & $-51.37\%$ \\
+8 & 44.68 & 19.14 & $-57.17\%$ \\ \bottomrule
+\end{tabular}
+\vspace{2mm}
+\caption{Draft-length sweep from \texttt{reports/speculative\_k\_sweep.json}. Every tested setting remained token-identical to greedy decoding, but throughput worsened monotonically as $K$ increased.}
+\label{tab:ksweep}
+\end{table}
+
+\subsection{Test-Time A* Search (TTA*) on MATH-500}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Method} & \textbf{Pass@1} & \textbf{Total Tokens} & \textbf{Wall Time} \\ \midrule
+Greedy Decoding  & 12/100 (12\%) & 19,989 & 474.1s \\
+TTA* Search      & 4/100 (4\%)   & 4,100  & 920.4s \\ \bottomrule
+\end{tabular}
+\vspace{2mm}
+\caption{Test-Time A* Search results on MATH-500. All numbers from \texttt{final\_tta\_benchmark\_results.json}. TTA* underperforms greedy decoding on both accuracy and latency.}
+\label{tab:tta}
+\end{table}
+
+\section{Analysis of Negative Results}
+
+\subsection{Why Speculative Decoding is Slower}
+
+The measured slowdown stems from three compounding factors:
+
+\begin{enumerate}
+    \item \textbf{Draft re-prefill cost}: The drafter re-processes the entire accepted prefix from scratch each iteration. As the prefix grows, this cost grows linearly.
+    \item \textbf{Sequential verification}: To guarantee correctness, the target processes each draft token individually rather than in batch. This eliminates the core parallelism advantage of speculative decoding.
+    \item \textbf{Python dispatch overhead}: Each token verification requires a Python$\to$Metal round-trip. With $K=5$ drafts per iteration, this adds 5 sequential dispatch calls versus 1 in baseline.
+\end{enumerate}
+
+Table~\ref{tab:ksweep} provides an additional practical lesson: increasing $K$ hurts performance monotonically in the current architecture. This is exactly the opposite of the usual speculative-decoding intuition on datacenter GPUs, and it indicates that per-iteration draft construction plus sequential target verification dominate any acceptance-rate benefit.
+
+On datacenter GPUs, batched verification often works correctly and efficiently due to mature deterministic kernels. On MLX/Metal, the attention codepath appears to differ between batched and single-token modes, producing numerical divergence. Fixing this at the framework level (or introducing deterministic batch behavior) would be necessary before standard speculative decoding can recover its intended speedup on Apple Silicon.
+
+\subsection{Why TTA* Underperforms Greedy}
+
+TTA* achieved only 4\% Pass@1 vs.\ greedy's 12\%, using fewer total tokens (4,100 vs.\ 19,989) but requiring $2\times$ wall time (920s vs.\ 474s). The failure mode is clear: the self-reflection heuristic $h(n)$---which asks the model to rate its own reasoning---is unreliable on a 4-bit quantized 3B model. The model cannot accurately judge its own partial derivations, leading to systematic pruning of correct branches.
+
+\section{Practical Guidance for Edge-LLM Researchers}
+
+The primary value of these results is operational:
+
+\begin{enumerate}
+    \item \textbf{Validate correctness before timing.} A speculative implementation can appear to work on several prompts while silently diverging later.
+    \item \textbf{Do not assume batch verification is numerically equivalent to sequential verification on MLX.} Check token identity directly.
+    \item \textbf{Treat draft-cache reuse with suspicion on edge runtimes.} A slower but explicit re-prefill may be necessary to preserve correctness.
+    \item \textbf{Measure $K$ instead of inheriting values from GPU literature.} On this stack, larger $K$ made performance strictly worse.
+    \item \textbf{Separate prototype claims from artifact-backed results.} Saved JSON artifacts were essential in preventing incorrect conclusions.
+\end{enumerate}
+
+\section{Reproducibility}
+
+The main speculative benchmark can be reproduced with:
+\begin{quote}
+\texttt{./venv/bin/python3 benchmark\_uma\_cascade.py}
+\end{quote}
+
+The TTA* artifact discussed in Table~\ref{tab:tta} is saved in:
+\begin{quote}
+\texttt{final\_tta\_benchmark\_results.json}
+\end{quote}
+
+The draft-length sweep is saved in:
+\begin{quote}
+\texttt{reports/speculative\_k\_sweep.json}
+\end{quote}
 
 \section{Conclusion}
-Our empirical validation mathematically proves that Test-Time Scaling via A* search is fundamentally superior to standard decoding on strictly quantized edge architectures. By balancing probabilistic accumulation with self-reflective heuristic rating, TTA* allows heavily compressed 3B parameter models to perform complex mathematical backtracking autonomously.
+
+We present measured results for speculative decoding and test-time search scaling on consumer Apple Silicon. Both techniques, in their current form on this hardware and software stack, produce negative results. Speculative decoding is correct but substantially slower; TTA* is both slower and less accurate than greedy decoding. The useful contribution is therefore not a new performance record, but a concrete, reproducible characterization of where correctness-first edge implementations fail. We expect these results to be most useful as a baseline and debugging guide for future MLX/Metal inference work.
+
+\begin{thebibliography}{9}
+\bibitem{leviathan2023fast} Leviathan, Y., Kalman, M., \& Matias, Y. (2023). Fast inference from transformers via speculative decoding. \textit{ICML 2023}.
+\bibitem{chen2023accelerating} Chen, C., et al. (2023). Accelerating large language model decoding with speculative sampling. \textit{arXiv:2302.01318}.
+\end{thebibliography}
 
 \end{document}

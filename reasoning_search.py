@@ -83,9 +83,14 @@ def tta_star_search(model, tokenizer, prompt, max_iterations=10, beam_width=3):
             for step, (token, logprobs) in enumerate(generate_step(temp_seq, model, sampler=sampler)):
                 if step >= 20: break
                 tokens.append(token)
-                # Add log prob of the chosen token. 
-                # logprobs here is actually the LOGITS.
-                log_p = logprobs - mx.logsumexp(logprobs, axis=-1, keepdims=True)
+                
+                # generate_step yields logits of shape (vocab_size,) or (1, vocab_size,)
+                # we must handle potential 2D shapes identically.
+                if logprobs.ndim > 1:
+                    log_p = logprobs[0] - mx.logsumexp(logprobs[0], axis=-1, keepdims=True)
+                else:
+                    log_p = logprobs - mx.logsumexp(logprobs, axis=-1, keepdims=True)
+                
                 token_logprob = log_p[token].item()
                 current_log_prob += token_logprob
                 if token == tokenizer.eos_token_id: break

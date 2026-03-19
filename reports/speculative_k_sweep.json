@@ -1,0 +1,37 @@
+[
+  {
+    "k": 1,
+    "avg_control_tps": 42.245414304129625,
+    "avg_speculative_tps": 25.101447400580845,
+    "speedup_pct": -40.581841096710235,
+    "all_match": true
+  },
+  {
+    "k": 2,
+    "avg_control_tps": 44.331795484030074,
+    "avg_speculative_tps": 24.959785981318234,
+    "speedup_pct": -43.69777783913656,
+    "all_match": true
+  },
+  {
+    "k": 3,
+    "avg_control_tps": 44.61138506775292,
+    "avg_speculative_tps": 24.149147628212468,
+    "speedup_pct": -45.867747456089326,
+    "all_match": true
+  },
+  {
+    "k": 5,
+    "avg_control_tps": 44.38193500308303,
+    "avg_speculative_tps": 21.58306653965284,
+    "speedup_pct": -51.36970360090529,
+    "all_match": true
+  },
+  {
+    "k": 8,
+    "avg_control_tps": 44.68441234089606,
+    "avg_speculative_tps": 19.137604683789096,
+    "speedup_pct": -57.171631714010516,
+    "all_match": true
+  }
+]

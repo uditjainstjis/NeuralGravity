@@ -1,0 +1,7 @@
+{
+    "avg_control_tps": 43.01193157166458,
+    "avg_cascade_tps": 20.936830816649852,
+    "speedup_percentage": -51.323202535636355,
+    "mismatch_found": false,
+    "status": "CORRECT IMPLEMENTATION"
+}

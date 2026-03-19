@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neural Gravity Results</title>
+  <style>
+    :root {
+      --bg: #f3efe7;
+      --panel: #fffdf8;
+      --ink: #1b1b1b;
+      --muted: #5b5b5b;
+      --accent: #0b5d4a;
+      --accent-soft: #dcefe9;
+      --warn: #8a3b12;
+      --warn-soft: #f7e1d5;
+      --line: #d8d2c6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, #fff8e8 0, transparent 28rem),
+        radial-gradient(circle at bottom right, #e4efe9 0, transparent 24rem),
+        var(--bg);
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px 64px;
+    }
+
+    .hero {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(250,245,235,0.96));
+      box-shadow: 0 20px 50px rgba(27, 27, 27, 0.07);
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.08;
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 4vw, 4rem);
+      max-width: 12ch;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-top: 28px;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 1.02rem;
+    }
+
+    .pillrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      font-size: 0.92rem;
+      background: var(--panel);
+      color: var(--ink);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 12px 28px rgba(27, 27, 27, 0.05);
+    }
+
+    .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .metric {
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .good {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: rgba(11, 93, 74, 0.18);
+    }
+
+    .bad {
+      background: var(--warn-soft);
+      color: var(--warn);
+      border-color: rgba(138, 59, 18, 0.18);
+    }
+
+    .section {
+      margin-top: 28px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      background: var(--panel);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+
+    th, td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-size: 0.96rem;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    th {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      background: #faf5ea;
+    }
+
+    .bars {
+      display: grid;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .barrow {
+      display: grid;
+      grid-template-columns: 70px 1fr 88px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .bar {
+      height: 12px;
+      border-radius: 999px;
+      background: #ebe5d8;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0b5d4a, #2f8a6f);
+      border-radius: 999px;
+    }
+
+    .foot {
+      margin-top: 28px;
+      font-size: 0.94rem;
+    }
+
+    a {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="label">Neural Gravity</div>
+      <h1>Correct, reproducible, and slower than baseline.</h1>
+      <p>
+        This repo now tells a cleaner story: speculative decoding correctness was fixed on Apple MLX,
+        but measured throughput remained worse than greedy decoding on an 8GB Apple M3. Test-time A*
+        also underperformed greedy decoding on the saved MATH-500 benchmark.
+      </p>
+      <div class="pillrow">
+        <div class="pill good">Speculative decoding: token-identical</div>
+        <div class="pill bad">Speculative decoding: -51.32% speedup</div>
+        <div class="pill bad">TTA*: 4% vs 12% greedy</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Main Results</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Speculative Status</div>
+          <div class="metric">Correct</div>
+          <p>No mismatches on the five-prompt validation set in the current benchmark.</p>
+        </div>
+        <div class="card">
+          <div class="label">Baseline TPS</div>
+          <div class="metric">43.01</div>
+          <p>Greedy target-only decoding using <code>Qwen2.5-3B-Instruct-4bit</code>.</p>
+        </div>
+        <div class="card">
+          <div class="label">Speculative TPS</div>
+          <div class="metric">20.94</div>
+          <p>Correctness-first speculative decoding with <code>K=5</code>.</p>
+        </div>
+        <div class="card bad">
+          <div class="label">Speculative Speedup</div>
+          <div class="metric">-51.32%</div>
+          <p>Measured throughput reduction relative to the greedy baseline.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Why It Slows Down</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Sequential verification</h3>
+          <p>
+            Batch verification produced numerical drift on MLX/Metal, so the final correct version verifies
+            drafted tokens one by one to match the baseline execution path.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Draft re-prefill</h3>
+          <p>
+            The drafter rebuilds context each iteration, which turns accepted-prefix growth into repeated work.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Python dispatch</h3>
+          <p>
+            The correctness-first loop adds repeated Python-to-Metal round-trips instead of collapsing work into one efficient target pass.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Draft-Length Sweep</h2>
+      <p>
+        Every tested draft length remained token-identical to greedy decoding, but throughput worsened as
+        <code>K</code> increased.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>K</th>
+            <th>Baseline TPS</th>
+            <th>Speculative TPS</th>
+            <th>Speedup</th>
+            <th>Correct</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>42.25</td><td>25.10</td><td>-40.58%</td><td>Yes</td></tr>
+          <tr><td>2</td><td>44.33</td><td>24.96</td><td>-43.70%</td><td>Yes</td></tr>
+          <tr><td>3</td><td>44.61</td><td>24.15</td><td>-45.87%</td><td>Yes</td></tr>
+          <tr><td>5</td><td>44.38</td><td>21.58</td><td>-51.37%</td><td>Yes</td></tr>
+          <tr><td>8</td><td>44.68</td><td>19.14</td><td>-57.17%</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+      <div class="bars">
+        <div class="barrow"><div>K=1</div><div class="bar"><div class="fill" style="width:56%"></div></div><div>25.10 TPS</div></div>
+        <div class="barrow"><div>K=2</div><div class="bar"><div class="fill" style="width:55.9%"></div></div><div>24.96 TPS</div></div>
+        <div class="barrow"><div>K=3</div><div class="bar"><div class="fill" style="width:54.0%"></div></div><div>24.15 TPS</div></div>
+        <div class="barrow"><div>K=5</div><div class="bar"><div class="fill" style="width:48.3%"></div></div><div>21.58 TPS</div></div>
+        <div class="barrow"><div>K=8</div><div class="bar"><div class="fill" style="width:42.8%"></div></div><div>19.14 TPS</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>TTA* Benchmark</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Accuracy</th>
+            <th>Total Tokens</th>
+            <th>Wall Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Greedy</td><td>12/100 (12%)</td><td>19,989</td><td>474.1s</td></tr>
+          <tr><td>TTA*</td><td>4/100 (4%)</td><td>4,100</td><td>920.4s</td></tr>
+        </tbody>
+      </table>
+      <p class="foot">
+        The current self-reflection heuristic does not beat the baseline on the saved MATH-500 run.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Useful Takeaways</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Validate correctness before timing</h3>
+          <p>Speculative decoding can appear stable on several prompts and still diverge later.</p>
+        </div>
+        <div class="card">
+          <h3>Do not inherit GPU assumptions</h3>
+          <p>On this stack, larger speculative depth made throughput strictly worse.</p>
+        </div>
+        <div class="card">
+          <h3>Negative results are still useful</h3>
+          <p>This repo now provides a reproducible baseline for future MLX and Apple Silicon inference work.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Artifacts</h2>
+      <p>
+        Paper: <a href="../reports/iclr_2026_submission.tex">reports/iclr_2026_submission.tex</a><br>
+        Speculative benchmark: <a href="../reports/benchmark_uma_cascade.json">reports/benchmark_uma_cascade.json</a><br>
+        K sweep: <a href="../reports/speculative_k_sweep.json">reports/speculative_k_sweep.json</a><br>
+        TTA* benchmark: <a href="../final_tta_benchmark_results.json">final_tta_benchmark_results.json</a>
+      </p>
+    </section>
+  </div>
+</body>
+</html>
