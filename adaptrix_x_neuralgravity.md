@@ -1,35 +1,28 @@
-# Adaptrix × Neural Gravity: Toward Hardware-Aware Modular Intelligence
-**Technical Synthesis & Research Proposal**
+# Technical Correlation: Antigravity × Neural Gravity
 
-## 1. Executive Summary
-This document synthesizes the architectural breakthroughs of **Project Neural Gravity** (HLRA, EGMP, Thermal-PID) with the modular domain-routing objectives of **Adaptrix**. We propose a unified framework for local LLM deployment where specialized adapters are not only domain-expert but also hardware-resilient.
+## 1. Project Identities: Logic vs. Physics
+While both projects utilize LoRA-based adapters for local LLMs, they solve different layers of the modular intelligence problem:
 
-## 2. Technical Synergies
+*   **Antigravity (The Logic):** Focuses on **Dynamic Routing** and **Lifecycle Management**. It answers: *"Which adapter should I load for this specific query, and how do I swap it out cleanly?"*
+*   **Neural Gravity (The Physics):** Focuses on **Architecture** and **Hardware Execution**. It answers: *"How do I ensure these adapters don't break when quantized to 2-bits, and how do I train/run them within the thermal limits of a MacBook M3?"*
 
-### A. HLRA: The Substrate for "Unbreakable" Domain Adapters
-*   **Adaptrix Problem:** Training domain adapters (Medical, Legal, Code) on sub-3B models typically requires quantized substrates (4-bit/2-bit) for edge deployment, leading to "weight destruction" and reasoning collapse.
-*   **Neural Gravity Solution:** **Hybrid Low-Rank Adaptation (HLRA)**. By using a dual-path architecture—**DoRA** for directional updates and **EoRA** (Error-compensated LoRA) initialized via SVD of the exact quantization error matrix $E = W_{orig} - Q(W)$—HLRA recovers the lost high-frequency signals from quantization.
-*   **Integration:** Adaptrix domain adapters should be architected as HLRA modules. This ensures that the Medical or Legal knowledge is injected into the *error manifold* of the base model, preventing the "forgetting" hypothesized in Adaptrix's *Reversibility Hypothesis*.
+## 2. How Neural Gravity Helps Antigravity
 
-### B. RAD-Routing: Resource-Aware Dynamic Routing
-*   **Adaptrix Problem:** Standard intent-based routing ignores the physical state of the device (MacBook/Edge). High-rank adapters may cause thermal throttling, spiking latency above the <200ms target.
-*   **Neural Gravity Solution:** **Thermal PID Controller & EGMP**. Neural Gravity's `thermal_pid.py` monitors `kOSThermalNotificationPressureLevel` to dynamically scale the rank $r$ of the gradient manifold.
-*   **Integration:** We propose **RAD-Routing**. The Adaptrix router receives a dual-signal: (1) Semantic Intent from the query and (2) Thermal Pressure from the OS.
-    *   *Nominal State:* Load full-rank HLRA adapters for maximum accuracy.
-    *   *Heavy Throttling:* Dynamically switch to a "Low-Rank Proxy" or prune the adapter heads to maintain real-time TPS (Tokens Per Second).
+### A. Solving the "Quantization-Modularity Paradox"
+Antigravity assumes that adapters can be hot-swapped onto small base models. However, at the 1.5B–3B scale, aggressive quantization (4-bit/2-bit) often destroys the "reasoning manifold."
+*   **Neural Gravity's Contribution:** The **Hybrid Low-Rank Adaptation (HLRA)** in `hybrid_adapter.py` uses an Error-compensated path (EoRA) to recover signals lost during quantization. This provides Antigravity with a **stable substrate**, ensuring that a "Medical" or "Legal" adapter actually works on a compressed local model.
 
-### C. Fused Modular Kernels (Solving the Stacking Bottleneck)
-*   **Adaptrix Problem:** *Hypothesis 1 (Adapter Interference)* suggests stacking multiple adapters. However, Neural Gravity's *Speculative Cascade* experiment proved that Python-to-Metal dispatch overhead (-58% speedup) kills performance for multi-path logic.
-*   **Neural Gravity Solution:** Custom Metal Kernels via `mx.fast.metal_kernel`.
-*   **Integration:** To achieve the <200ms swap latency, Adaptrix must avoid sequential adapter loading. We propose a **Fused Modular Kernel** that loads multiple adapter weights into a single GPU address space and uses a "Masked-Gating" operation (implemented in Metal) to apply domain deltas in a single fused pass.
+### B. Thermal-Aware Routing (RAD-Routing)
+Antigravity aims for <200ms swap latency. On mobile devices, thermal throttling can spike this latency, making the system unusable.
+*   **Neural Gravity's Contribution:** The **Thermal PID Controller** and **EGMP Optimizer** allow the system to sense hardware pressure. This enables a "Resource-Aware" version of Antigravity routing: if the device is overheating, the router can choose a lower-rank version of an adapter to maintain the 200ms target.
 
-## 3. Revised Research Hypotheses (ICLR 2026 Target)
+### C. Reducing Training Overhead
+Antigravity requires training multiple domain adapters (Medical, Code, Legal). 
+*   **Neural Gravity's Contribution:** The **Elastic Gradient Manifold Projection (EGMP)** optimizer reduces memory usage by ~80% during training by projecting gradients into a low-rank manifold. This makes the Antigravity vision of "user-trained local experts" feasible on a single consumer GPU.
 
-1.  **The Quantization-Modularity Paradox:** Modular domain adapters trained via standard LoRA on 2-bit models will diverge; however, **HLRA-based modularity** will exhibit statistical parity with full-precision adapters.
-2.  **Thermal-Latency Equilibrium:** RAD-Routing can maintain a consistent inference latency of <200ms across varying thermal loads (0 to 3) by dynamically modulating adapter rank $r$ without dropping below 85% domain accuracy.
-3.  **Manifold Orthogonality:** By using Neural Gravity’s **EGMP** during the training of domain adapters, we can enforce gradient orthogonality between the Medical and Legal subspaces, significantly reducing "adapter interference" during stacking.
+## 3. Honest Distinctions
+*   **Routing:** Neural Gravity does **not** implement semantic intent classification (the core of Antigravity). It assumes the "what to run" is decided elsewhere.
+*   **Modularity:** Antigravity treats adapters as **black boxes** to be routed. Neural Gravity treats them as **mathematical manifolds** to be optimized for the M3/M4 GPU architecture.
 
-## 4. Implementation Path
-1.  **Base:** Use Qwen2-1.5B/Phi-2 as the substrate.
-2.  **Training:** Employ the `EGMPOptimizer` from `neural_gravity/` to train Adaptrix adapters with 82% less memory.
-3.  **Deployment:** Implement the `HybridLinear` layer for all domain-specific heads to ensure reasoning stability on Apple Silicon M3/M4.
+## 4. Synthesis for ICLR 2026
+We propose using **Neural Gravity's HLRA** as the standard module format for **Antigravity's Routing System**. This combination allows for a modular LLM that is both semantically intelligent (Antigravity) and physically resilient (Neural Gravity).
