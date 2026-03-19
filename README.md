@@ -73,6 +73,26 @@ TTA* benchmark:
 ./venv/bin/python3 benchmark_tta.py
 ```
 
+## GitHub Pages
+
+The repo includes a static results page at [`docs/index.html`](./docs/index.html).
+
+To publish it with GitHub Pages:
+
+1. Open the GitHub repository settings.
+2. Go to `Pages`.
+3. Set the source to `Deploy from a branch`.
+4. Choose branch `main` and folder `/docs`.
+5. Save.
+
+After GitHub finishes publishing, the page should be available at:
+
+```text
+https://uditjainstjis.github.io/NeuralGravity/
+```
+
+For a short operational note, see [`docs/PUBLISHING.md`](./docs/PUBLISHING.md).
+
 ## Paper Positioning
 
 The current paper is not a breakthrough paper. It is a practical systems/negative-results paper:
