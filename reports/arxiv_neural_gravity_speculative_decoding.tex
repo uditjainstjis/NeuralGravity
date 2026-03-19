@@ -1,0 +1,277 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+\title{\textbf{Why Speculative Decoding Fails on Apple MLX:}\\
+\textbf{A Correctness-First Study on an 8GB M3 MacBook}}
+
+\author{
+  Udit Jain \\
+  Independent Researcher \\
+  \texttt{hello@uditjain.in}
+}
+
+\date{March 19, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Speculative decoding is widely used to accelerate autoregressive language model inference, but most positive results come from datacenter GPU stacks rather than consumer edge runtimes. This paper studies speculative decoding on an 8GB Apple M3 MacBook using Apple MLX. We implement a correctness-first speculative decoder with a \texttt{Qwen2.5-0.5B-Instruct} draft model and a 4-bit \texttt{Qwen2.5-3B-Instruct-4bit} target model, and we evaluate it on a 70-prompt labeled suite spanning science, programming, systems/ML, math, SQL, business, writing, creative, education, and policy/health prompts. The main result is a strong negative one: the token-identical correctness-first implementation achieves 17.27 $\pm$ 3.62 tokens/s versus 38.01 $\pm$ 9.17 tokens/s for greedy decoding, a 54.56\% slowdown. A direct practical contrast using native MLX speculative generation reaches 30.84 $\pm$ 6.49 tokens/s, but diverges from greedy output on all 70 prompts. Profiling shows that draft generation dominates runtime (59.22\% of measured component time), followed by sequential verification (24.14\%) and correction steps (14.45\%). A draft-length sweep over $K \in \{1,2,3,5,8\}$ remains token-identical but is slower in all tested settings. The contribution of this work is therefore not an acceleration result, but a reproducible failure analysis showing that preserving greedy-equivalent correctness on this Apple MLX stack negates the expected benefit of speculation.
+\end{abstract}
+
+\section{Introduction}
+
+Speculative decoding accelerates autoregressive inference by letting a smaller draft model propose several tokens that a larger target model can verify \cite{leviathan2023fast, chen2023accelerating}. On highly optimized GPU stacks, the method can improve throughput because multiple candidate tokens may be accepted per expensive target-model call.
+
+Whether that advantage transfers to constrained consumer hardware is less clear. Apple Silicon systems running Apple MLX differ materially from datacenter CUDA environments: memory is unified, low-RAM devices force aggressive quantization, and the runtime cost structure is strongly affected by dispatch behavior and cache management. These differences make it unsafe to assume that implementations validated on server GPUs remain both correct and fast on edge devices.
+
+This paper asks a narrow question: what happens when speculative decoding on Apple MLX is forced to remain token-identical to greedy decoding? The answer, on the tested setup, is that throughput collapses. Once correctness is enforced, the implementation becomes substantially slower than greedy decoding across a diverse prompt suite.
+
+\section{Contributions}
+
+This paper makes four concrete contributions.
+\begin{enumerate}
+    \item A correctness-first speculative decoding implementation for Apple MLX on an 8GB Apple M3 MacBook.
+    \item A 70-prompt labeled benchmark suite spanning ten prompt categories rather than a tiny ad hoc sample.
+    \item A direct comparison between a token-identical correctness-first implementation and native MLX speculative generation.
+    \item A profiling breakdown that quantifies where the correctness-first implementation spends time.
+\end{enumerate}
+
+\section{Experimental Setup}
+
+\subsection{Hardware and runtime}
+All experiments were run on an Apple M3 MacBook with 8GB unified memory using Apple MLX and MLX-LM. The target model is \texttt{mlx-community/Qwen2.5-3B-Instruct-4bit}. The draft model is \texttt{Qwen/Qwen2.5-0.5B-Instruct}. Each run generates 64 continuation tokens.
+
+\subsection{Prompt suite}
+The benchmark uses 70 prompts divided evenly across ten categories:
+\texttt{science},
+\texttt{programming},
+\texttt{systems\_ml},
+\texttt{math},
+\texttt{data\_sql},
+\texttt{business\_econ},
+\texttt{writing\_marketing},
+\texttt{creative},
+\texttt{education}, and
+\texttt{health\_policy}.
+
+This benchmark is intentionally broad. The goal of the paper is not to measure task accuracy on one domain-specific benchmark such as MATH-500; it is to characterize inference behavior across varied prompt styles and output patterns that stress speculative decoding differently.
+
+\subsection{Correctness criterion}
+The main implementation is judged against a strict criterion: token-level identity with greedy decoding. For every prompt, speculative output is compared token by token with the greedy baseline. Any first mismatch is recorded.
+
+\section{Implementation}
+
+\subsection{Greedy baseline}
+The greedy baseline runs standard autoregressive decoding with the target model only. A prompt cache is constructed once, and each next token is generated from the previous accepted token.
+
+\subsection{Correctness-first speculative decoding}
+The correctness-first implementation proceeds in rounds. In each round, the draft model proposes up to $K$ tokens. The target model then verifies those draft tokens sequentially, one token at a time, rather than in one batched pass. When the target prediction matches a draft token, the token is accepted and the target cache advances. At the first mismatch, the target prediction is emitted as a correction and the remaining draft tokens are discarded.
+
+\subsection{Why this implementation is slower by design}
+Two design choices intentionally favor correctness over speed.
+\begin{enumerate}
+    \item The target verifies draft tokens sequentially rather than in batch, because the batched path did not preserve greedy-equivalent outputs on this stack.
+    \item The draft model rebuilds its cache from the accepted prefix each round, which is slower than ideal cache reuse but avoids synchronization drift.
+\end{enumerate}
+
+\subsection{Practical contrast condition}
+In addition to the custom correctness-first implementation, we benchmark native MLX speculative generation as a practical contrast. This gives a useful answer to the question, ``what happens if we do \emph{not} insist on greedy-equivalent output?'' On this setup, the native path is materially faster than the correctness-first path but diverges from greedy decoding on every prompt in the benchmark.
+
+\section{Results}
+
+\subsection{Main benchmark}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Method} & \textbf{Mean TPS} & \textbf{Std TPS} & \textbf{Speedup vs. Greedy} \\
+\midrule
+Greedy baseline & 38.01 & 9.17 & --- \\
+Correctness-first speculative ($K=5$) & 17.27 & 3.62 & -54.56\% \\
+Native MLX speculative & 30.84 & 6.49 & -18.86\% \\
+\bottomrule
+\end{tabular}
+\caption{Main results from \texttt{reports/benchmark\_uma\_cascade.json} on 70 prompts.}
+\label{tab:main}
+\end{table}
+
+The headline result is straightforward: the token-identical correctness-first implementation is dramatically slower than greedy decoding. The practical contrast is also informative: native MLX speculative generation is less bad from a throughput perspective, but it does not preserve greedy-equivalent outputs.
+
+\subsection{Correctness comparison}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Method} & \textbf{Mismatch Status} & \textbf{Prompt-Level Outcome} \\
+\midrule
+Correctness-first speculative & No mismatches & 70/70 matched greedy \\
+Native MLX speculative & Diverged & 70/70 mismatched greedy \\
+\bottomrule
+\end{tabular}
+\caption{Token-level comparison against greedy decoding on the 70-prompt suite.}
+\label{tab:correctness}
+\end{table}
+
+In the native MLX path, the first mismatch occurred at token index 0 on every prompt in the saved artifact. This is not a subtle late-sequence drift. It is immediate divergence from the greedy baseline.
+
+\subsection{Profiling breakdown}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Measured Component} & \textbf{Share of Measured Time} \\
+\midrule
+Draft generation & 59.22\% \\
+Sequential verification & 24.14\% \\
+Correction steps & 14.45\% \\
+Target prefill & 2.17\% \\
+Bookkeeping & 0.03\% \\
+\bottomrule
+\end{tabular}
+\caption{Average profiling breakdown for the correctness-first implementation. Percentages are derived from the saved profile summary in \texttt{reports/benchmark\_uma\_cascade.json}.}
+\label{tab:profile}
+\end{table}
+
+The profiling result materially strengthens the negative-result claim. The implementation is not slow because of generic overhead alone. Most of the measured time is spent in repeated draft generation, and a large additional share is spent in sequential target verification. The core speculative advantage is therefore undermined on both sides: drafting is expensive, and verification cannot exploit the usual batch-style speedup.
+
+Additional profile statistics reinforce this interpretation. Across the 70 prompts, the correctness-first implementation averaged an acceptance rate of 0.389, about 24.06 rounds per prompt, 117.09 proposed draft tokens, 40.59 accepted draft tokens, and 23.41 correction steps.
+
+\subsection{Draft-length sweep}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}cccc@{}}
+\toprule
+\textbf{$K$} & \textbf{Baseline TPS} & \textbf{Speculative TPS} & \textbf{Speedup} \\
+\midrule
+1 & 36.86 & 4.62 & -87.48\% \\
+2 & 40.50 & 8.20 & -79.76\% \\
+3 & 40.37 & 9.18 & -77.26\% \\
+5 & 43.37 & 12.69 & -70.74\% \\
+8 & 41.85 & 9.19 & -78.03\% \\
+\bottomrule
+\end{tabular}
+\caption{Draft-length sweep on a 20-prompt subset. All tested settings remained token-identical to greedy decoding.}
+\label{tab:ksweep}
+\end{table}
+
+The sweep does not show a monotonic slowdown in the strict mathematical sense, because $K=5$ performs better than $K=8$. But it does show something equally useful: every tested token-identical setting is substantially slower than greedy decoding, and increasing $K$ does not recover the expected speculative advantage on this stack.
+
+\subsection{Category-level behavior}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Category} & \textbf{Greedy TPS} & \textbf{Correctness-First Speedup} \\
+\midrule
+Math & 42.24 & -48.91\% \\
+Data/SQL & 38.20 & -46.49\% \\
+Programming & 35.23 & -49.45\% \\
+Systems/ML & 36.96 & -51.44\% \\
+Business/Econ & 39.09 & -56.36\% \\
+Writing/Marketing & 41.53 & -56.06\% \\
+Science & 39.54 & -58.16\% \\
+Creative & 34.60 & -59.35\% \\
+Education & 34.10 & -55.26\% \\
+Health/Policy & 38.60 & -64.33\% \\
+\bottomrule
+\end{tabular}
+\caption{Category-level summary from the 70-prompt labeled suite.}
+\label{tab:category}
+\end{table}
+
+The negative result is broad rather than localized. Math and SQL prompts are the least bad cases in the current suite, while health/policy and creative prompts are worse. But no category turns correctness-first speculation into a win.
+
+\section{Discussion}
+
+The evidence points to a simple practical conclusion: on this Apple MLX stack, preserving greedy-equivalent correctness destroys the throughput case for speculative decoding.
+
+Three observations matter most.
+\begin{enumerate}
+    \item Sequential verification removes the usual verification-side batching advantage.
+    \item Draft-side cost is not cheap enough to make up for that loss; it is the largest measured time component.
+    \item The native MLX speculative path demonstrates the central tradeoff directly: relaxing the greedy-equivalence requirement improves throughput relative to the correctness-first version, but it also immediately changes the generated token stream.
+\end{enumerate}
+
+This is exactly the sort of failure mode that can be missed if researchers report speed without validating output identity. A speculative implementation may look operationally successful while silently solving a different problem.
+
+\section{Limitations}
+
+This paper is intentionally scoped, and its limitations should be read literally.
+\begin{enumerate}
+    \item The experiments use one hardware setup: an 8GB Apple M3 MacBook.
+    \item The benchmark is broad but synthetic; it is a prompt suite for inference characterization, not a standard task-accuracy leaderboard.
+    \item The analysis is grounded in measured timings and mismatch checks, but some causal explanations remain informed inference rather than kernel-level instrumentation.
+    \item The native MLX contrast is included as a practical comparison, not as a fully controlled ablation of every implementation detail.
+    \item The paper does not claim that speculative decoding is impossible on Apple Silicon; it claims that this correctness-first implementation is a strong negative result on this stack.
+\end{enumerate}
+
+\section{Practical Guidance}
+
+The benchmark supports four concrete recommendations for edge-LLM researchers.
+\begin{enumerate}
+    \item \textbf{Validate token identity before claiming acceleration.}
+    \item \textbf{Profile the draft path separately from verification.} On this stack, the draft path is the dominant measured cost.
+    \item \textbf{Do not inherit $K$ from datacenter-GPU literature.} Here, all tested token-identical $K$ values were substantially slower than greedy decoding.
+    \item \textbf{Treat ``faster but different output'' as a different result category.} Native speculation may be operationally useful in some settings, but it should not be conflated with greedy-equivalent acceleration.
+\end{enumerate}
+
+\section{Reproducibility}
+
+The main benchmark can be reproduced with:
+\begin{quote}
+\texttt{./venv/bin/python3 benchmark\_uma\_cascade.py}
+\end{quote}
+
+The saved artifacts are:
+\begin{quote}
+\texttt{reports/benchmark\_uma\_cascade.json}
+\end{quote}
+\begin{quote}
+\texttt{reports/speculative\_k\_sweep.json}
+\end{quote}
+
+The benchmark script writes per-prompt results, category summaries, profiling aggregates, correctness checks, and the draft-length sweep into the JSON artifact.
+
+\section{Author and Tooling Disclosure}
+
+The implementation, debugging, benchmarking, artifact analysis, and manuscript drafting for this project were carried out with substantial assistance from AI-based tools, including Antigravity, Codex, and Gemini CLI. These tools were used to help generate code, propose edits, analyze results, and draft explanatory text. The human author made the final decisions about what to run, what artifacts to preserve, and what claims to include in this manuscript.
+
+This disclosure is included for transparency. Responsibility for the content of the manuscript remains with the submitting human author.
+
+\section{Conclusion}
+
+We evaluated speculative decoding on Apple MLX under a strict correctness-first requirement and found a clear negative result. On a 70-prompt labeled suite, the token-identical implementation was 54.56\% slower than greedy decoding. Profiling shows that repeated draft generation and sequential verification dominate the measured runtime, while a practical native-MLX speculative path trades some of that overhead for immediate divergence from greedy output. The useful contribution of this work is therefore not a new acceleration technique, but a reproducible characterization of why correctness-preserving speculative decoding currently fails on this Apple MLX setup.
+
+\begin{thebibliography}{9}
+
+\bibitem{leviathan2023fast}
+Y. Leviathan, M. Kalman, and Y. Matias.
+Fast inference from transformers via speculative decoding.
+In \textit{Proceedings of the 40th International Conference on Machine Learning}, 2023.
+
+\bibitem{chen2023accelerating}
+C. Chen, S. Borgeaud, G. Irving, J.-B. Lespiau, L. Sifre, and J. Jumper.
+Accelerating large language model decoding with speculative sampling.
+\textit{arXiv preprint arXiv:2302.01318}, 2023.
+
+\end{thebibliography}
+
+\end{document}

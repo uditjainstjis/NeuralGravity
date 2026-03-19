@@ -1,7 +1,2338 @@
 {
-    "avg_control_tps": 43.01193157166458,
-    "avg_cascade_tps": 20.936830816649852,
-    "speedup_percentage": -51.323202535636355,
+  "hardware": "Apple M3 MacBook 8GB",
+  "framework": "Apple MLX / MLX-LM",
+  "target_model": "mlx-community/Qwen2.5-3B-Instruct-4bit",
+  "draft_model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "num_prompts": 70,
+  "num_successful_prompts": 70,
+  "num_failed_prompts": 0,
+  "max_tokens": 64,
+  "main_k": 5,
+  "block_reload_interval": 10,
+  "categories": [
+    "business_econ",
+    "creative",
+    "data_sql",
+    "education",
+    "health_policy",
+    "math",
+    "programming",
+    "science",
+    "systems_ml",
+    "writing_marketing"
+  ],
+  "baseline": {
+    "mean_tps": 38.010502697842355,
+    "std_tps": 9.166044224581176
+  },
+  "correctness_first_speculative": {
+    "mean_tps": 17.272204181246547,
+    "std_tps": 3.620947791084027,
+    "speedup_percentage": -54.559390286024836,
     "mismatch_found": false,
-    "status": "CORRECT IMPLEMENTATION"
+    "status": "CORRECT IMPLEMENTATION",
+    "profile_summary": {
+      "target_prefill_sec": {
+        "mean": 0.08491599291363465,
+        "std": 0.004790877679337984
+      },
+      "draft_generation_sec": {
+        "mean": 2.321602464071579,
+        "std": 1.0246758833127472
+      },
+      "verification_sec": {
+        "mean": 0.946229107086713,
+        "std": 0.17062108761458342
+      },
+      "correction_sec": {
+        "mean": 0.5663010273990429,
+        "std": 0.24161180053522832
+      },
+      "bookkeeping_sec": {
+        "mean": 0.0009957828582888137,
+        "std": 0.0024519603251334154
+      },
+      "measured_component_total_sec": {
+        "mean": 3.920044374329258,
+        "std": 1.166432328329649
+      },
+      "acceptance_rate": {
+        "mean": 0.3887961729781829,
+        "std": 0.17768023912971456
+      },
+      "rounds": {
+        "mean": 24.057142857142857,
+        "std": 6.243572264095069
+      },
+      "draft_tokens_proposed": {
+        "mean": 117.08571428571429,
+        "std": 29.880313356690152
+      },
+      "draft_tokens_accepted": {
+        "mean": 40.58571428571429,
+        "std": 6.298131439350023
+      },
+      "corrections": {
+        "mean": 23.414285714285715,
+        "std": 6.298131439350023
+      },
+      "share_of_time_percent": {
+        "target_prefill": 2.1661997876787877,
+        "draft_generation": 59.22388224160902,
+        "verification": 24.13822438549865,
+        "correction": 14.446291248831596,
+        "bookkeeping": 0.025402336381949702
+      }
+    }
+  },
+  "native_mlx_speculative": {
+    "mean_tps": 30.841875776607125,
+    "std_tps": 6.494475277769957,
+    "speedup_percentage": -18.85959514458658,
+    "mismatch_found": true,
+    "status": "DIVERGED FROM BASELINE"
+  },
+  "k_sweep": [
+    {
+      "k": 1,
+      "avg_baseline_tps": 36.86026470947358,
+      "avg_speculative_tps": 4.616657616700154,
+      "speedup_percentage": -87.47524562536955,
+      "correct": true
+    },
+    {
+      "k": 2,
+      "avg_baseline_tps": 40.49932566121527,
+      "avg_speculative_tps": 8.197442854063118,
+      "speedup_percentage": -79.75906334185335,
+      "correct": true
+    },
+    {
+      "k": 3,
+      "avg_baseline_tps": 40.37226020649692,
+      "avg_speculative_tps": 9.181502990299498,
+      "speedup_percentage": -77.25789206911442,
+      "correct": true
+    },
+    {
+      "k": 5,
+      "avg_baseline_tps": 43.372586687453875,
+      "avg_speculative_tps": 12.69039411184667,
+      "speedup_percentage": -70.740979311899,
+      "correct": true
+    },
+    {
+      "k": 8,
+      "avg_baseline_tps": 41.847169444756084,
+      "avg_speculative_tps": 9.192799399337227,
+      "speedup_percentage": -78.03244634867606,
+      "correct": true
+    }
+  ],
+  "k_sweep_prompt_count": 20,
+  "category_summary": {
+    "science": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 39.537647680018225,
+        "std_tps": 2.3046995607869563
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 16.541686962745153,
+        "std_tps": 2.965692543815637,
+        "speedup_percentage": -58.16218734959012
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 28.204345475959215,
+        "std_tps": 4.757424280268764,
+        "speedup_percentage": -28.66458393220672
+      }
+    },
+    "programming": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 35.23220702640138,
+        "std_tps": 12.529561381970222
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 17.810193413049838,
+        "std_tps": 5.292927841341423,
+        "speedup_percentage": -49.44911228608613
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 31.980779899862753,
+        "std_tps": 5.538099671814886,
+        "speedup_percentage": -9.228565000489919
+      }
+    },
+    "systems_ml": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 36.963596856955625,
+        "std_tps": 11.493978358917014
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 17.949829257076882,
+        "std_tps": 1.756827855491295,
+        "speedup_percentage": -51.43917047212582
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 32.78290973270798,
+        "std_tps": 4.142488428290242,
+        "speedup_percentage": -11.310282222875578
+      }
+    },
+    "math": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 42.24074277005105,
+        "std_tps": 1.363826167169216
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 21.58062745819921,
+        "std_tps": 2.045848700748997,
+        "speedup_percentage": -48.91039777477585
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 39.18952375861607,
+        "std_tps": 3.0271238693694125,
+        "speedup_percentage": -7.223402836557868
+      }
+    },
+    "data_sql": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 38.202197152973845,
+        "std_tps": 13.088945504461288
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 20.441342492089625,
+        "std_tps": 1.8631783427155004,
+        "speedup_percentage": -46.491709860990625
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 36.38747885255939,
+        "std_tps": 2.427702595896654,
+        "speedup_percentage": -4.750298243705043
+      }
+    },
+    "business_econ": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 39.090886091867084,
+        "std_tps": 10.847296094738988
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 17.059662599921616,
+        "std_tps": 1.8052389087858747,
+        "speedup_percentage": -56.358976975272746
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 32.70426815645375,
+        "std_tps": 3.1758675054061465,
+        "speedup_percentage": -16.337869447124355
+      }
+    },
+    "writing_marketing": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 41.53405664974456,
+        "std_tps": 3.1393055433408095
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 18.24801863121465,
+        "std_tps": 2.219552911285229,
+        "speedup_percentage": -56.06492574250659
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 32.64305777455084,
+        "std_tps": 5.585442846111613,
+        "speedup_percentage": -21.406526576903484
+      }
+    },
+    "creative": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 34.604040987737484,
+        "std_tps": 11.735796598503322
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 14.06680361730024,
+        "std_tps": 1.6873346057886474,
+        "speedup_percentage": -59.34924588060382
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 23.167441598424343,
+        "std_tps": 2.0063457485314857,
+        "speedup_percentage": -33.04989551181578
+      }
+    },
+    "education": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 34.09553414764417,
+        "std_tps": 11.959392718519625
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 15.25365969723606,
+        "std_tps": 2.860308563608137,
+        "speedup_percentage": -55.26200108441473
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 27.586148193933045,
+        "std_tps": 5.133369436937111,
+        "speedup_percentage": -19.09160867087015
+      }
+    },
+    "health_policy": {
+      "num_prompts": 7,
+      "baseline": {
+        "mean_tps": 38.60411761503014,
+        "std_tps": 2.9525063565269143
+      },
+      "correctness_first_speculative": {
+        "mean_tps": 13.770217683632211,
+        "std_tps": 4.114636984083039,
+        "speedup_percentage": -64.3296660191738
+      },
+      "native_mlx_speculative": {
+        "mean_tps": 23.772804323003868,
+        "std_tps": 7.032455542796126,
+        "speedup_percentage": -38.41899312381083
+      }
+    }
+  },
+  "failed_prompts": [],
+  "per_prompt": [
+    {
+      "prompt_index": 1,
+      "category": "science",
+      "prompt": "In 5 short sentences, explain general relativity to a senior undergraduate physics student.",
+      "baseline_tps": 40.15130978427923,
+      "correctness_first_tps": 15.994552687231023,
+      "native_speculative_tps": 22.92639728860905,
+      "correctness_first_speedup_pct": -60.16430653653669,
+      "native_speculative_speedup_pct": -42.90000148990006,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 3251,
+        "candidate_token": 82133
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08458970799983945,
+        "draft_generation_sec": 2.4540875010134187,
+        "verification_sec": 0.8523676249969867,
+        "correction_sec": 0.6036897060330375,
+        "bookkeeping_sec": 0.0008017069994821213,
+        "rounds": 27,
+        "draft_tokens_proposed": 130,
+        "draft_tokens_accepted": 38,
+        "corrections": 26,
+        "measured_component_total_sec": 3.9955362470427644,
+        "acceptance_rate": 0.2923076923076923
+      }
+    },
+    {
+      "prompt_index": 2,
+      "category": "science",
+      "prompt": "In 5 short sentences, summarize how TCP congestion control works in practice.",
+      "baseline_tps": 34.883938004143985,
+      "correctness_first_tps": 12.462776682468757,
+      "native_speculative_tps": 23.87112910162822,
+      "correctness_first_speedup_pct": -64.27359582800469,
+      "native_speculative_speedup_pct": -31.569855734772588,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 26656,
+        "candidate_token": 11628
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.09478770799614722,
+        "draft_generation_sec": 3.5337458349895314,
+        "verification_sec": 0.5938869579913444,
+        "correction_sec": 0.9064318309829105,
+        "bookkeeping_sec": 0.00047758498112671077,
+        "rounds": 39,
+        "draft_tokens_proposed": 192,
+        "draft_tokens_accepted": 26,
+        "corrections": 38,
+        "measured_component_total_sec": 5.12932991694106,
+        "acceptance_rate": 0.13541666666666666
+      }
+    },
+    {
+      "prompt_index": 3,
+      "category": "science",
+      "prompt": "In 6 short sentences, describe the process of cellular respiration step by step.",
+      "baseline_tps": 39.633719408697786,
+      "correctness_first_tps": 19.941715923112287,
+      "native_speculative_tps": 34.13803983102878,
+      "correctness_first_speedup_pct": -49.684974762333326,
+      "native_speculative_speedup_pct": -13.866171683253526,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 1378
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08456708299490856,
+        "draft_generation_sec": 1.5825285019891453,
+        "verification_sec": 1.1489250420054304,
+        "correction_sec": 0.38921754198963754,
+        "bookkeeping_sec": 0.0004646660090656951,
+        "rounds": 17,
+        "draft_tokens_proposed": 81,
+        "draft_tokens_accepted": 48,
+        "corrections": 16,
+        "measured_component_total_sec": 3.2057028349881875,
+        "acceptance_rate": 0.5925925925925926
+      }
+    },
+    {
+      "prompt_index": 4,
+      "category": "science",
+      "prompt": "In 4 short sentences, explain how cryptographic hash functions are used in blockchains.",
+      "baseline_tps": 39.81861377106116,
+      "correctness_first_tps": 13.390599182029957,
+      "native_speculative_tps": 27.892256277489683,
+      "correctness_first_speedup_pct": -66.37100613542253,
+      "native_speculative_speedup_pct": -29.951714447274792,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 6531,
+        "candidate_token": 51023
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.09155641599500086,
+        "draft_generation_sec": 3.0971199149935273,
+        "verification_sec": 0.8177265380363679,
+        "correction_sec": 0.7483653369708918,
+        "bookkeeping_sec": 0.0004021250060759485,
+        "rounds": 31,
+        "draft_tokens_proposed": 152,
+        "draft_tokens_accepted": 34,
+        "corrections": 30,
+        "measured_component_total_sec": 4.755170331001864,
+        "acceptance_rate": 0.2236842105263158
+      }
+    },
+    {
+      "prompt_index": 5,
+      "category": "science",
+      "prompt": "In 4 short sentences, describe the greenhouse effect without equations.",
+      "baseline_tps": 41.47916652145526,
+      "correctness_first_tps": 16.055233011917483,
+      "native_speculative_tps": 24.950518463133967,
+      "correctness_first_speedup_pct": -61.293260307887685,
+      "native_speculative_speedup_pct": -39.84807180195337,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 8628
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08017595799901756,
+        "draft_generation_sec": 2.3935000009587384,
+        "verification_sec": 0.863862958001846,
+        "correction_sec": 0.6408535419977852,
+        "bookkeeping_sec": 0.00016604001575615257,
+        "rounds": 28,
+        "draft_tokens_proposed": 140,
+        "draft_tokens_accepted": 37,
+        "corrections": 27,
+        "measured_component_total_sec": 3.9785584989731433,
+        "acceptance_rate": 0.2642857142857143
+      }
+    },
+    {
+      "prompt_index": 6,
+      "category": "science",
+      "prompt": "In 5 short sentences, explain Bayes' theorem with a medical-testing example.",
+      "baseline_tps": 38.898924419831495,
+      "correctness_first_tps": 17.905325869233017,
+      "native_speculative_tps": 28.907291395090184,
+      "correctness_first_speedup_pct": -53.969611920414685,
+      "native_speculative_speedup_pct": -25.686142158849425,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 9362
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.084890665995772,
+        "draft_generation_sec": 1.9189227089955239,
+        "verification_sec": 1.0781315010244725,
+        "correction_sec": 0.48127208100049756,
+        "bookkeeping_sec": 0.0008528340040356852,
+        "rounds": 20,
+        "draft_tokens_proposed": 99,
+        "draft_tokens_accepted": 44,
+        "corrections": 20,
+        "measured_component_total_sec": 3.5640697910203016,
+        "acceptance_rate": 0.4444444444444444
+      }
+    },
+    {
+      "prompt_index": 7,
+      "category": "science",
+      "prompt": "In 5 short sentences, explain why the harmonic series diverges.",
+      "baseline_tps": 41.89786185065867,
+      "correctness_first_tps": 20.04160538322356,
+      "native_speculative_tps": 34.744785974734626,
+      "correctness_first_speedup_pct": -52.16556526282859,
+      "native_speculative_speedup_pct": -17.072651347747936,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 279
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08112741700460901,
+        "draft_generation_sec": 1.4707544620032422,
+        "verification_sec": 1.2687344170190045,
+        "correction_sec": 0.35962616400502156,
+        "bookkeeping_sec": 9.866799518931657e-05,
+        "rounds": 15,
+        "draft_tokens_proposed": 71,
+        "draft_tokens_accepted": 50,
+        "corrections": 14,
+        "measured_component_total_sec": 3.1803411280270666,
+        "acceptance_rate": 0.704225352112676
+      }
+    },
+    {
+      "prompt_index": 8,
+      "category": "programming",
+      "prompt": "Write only Python code for breadth-first search on a graph.",
+      "baseline_tps": 41.20234117457179,
+      "correctness_first_tps": 19.91317105694687,
+      "native_speculative_tps": 35.88693064841943,
+      "correctness_first_speedup_pct": -51.66980688651651,
+      "native_speculative_speedup_pct": -12.900748779374682,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 525
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.07908574999601115,
+        "draft_generation_sec": 1.6750067039974965,
+        "verification_sec": 1.053014038974652,
+        "correction_sec": 0.40557071001967415,
+        "bookkeeping_sec": 0.00011320500198053196,
+        "rounds": 19,
+        "draft_tokens_proposed": 93,
+        "draft_tokens_accepted": 46,
+        "corrections": 18,
+        "measured_component_total_sec": 3.2127904079898144,
+        "acceptance_rate": 0.4946236559139785
+      }
+    },
+    {
+      "prompt_index": 9,
+      "category": "programming",
+      "prompt": "Write only Python code for merging overlapping intervals.",
+      "baseline_tps": 43.50773647441339,
+      "correctness_first_tps": 22.831721846803443,
+      "native_speculative_tps": 37.299200794314565,
+      "correctness_first_speedup_pct": -47.52261621279557,
+      "native_speculative_speedup_pct": -14.269957904498265,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 315
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08626204200118082,
+        "draft_generation_sec": 1.3183078739893972,
+        "verification_sec": 1.0412096239961102,
+        "correction_sec": 0.3561272480073967,
+        "bookkeeping_sec": 9.499798034084961e-05,
+        "rounds": 17,
+        "draft_tokens_proposed": 83,
+        "draft_tokens_accepted": 48,
+        "corrections": 16,
+        "measured_component_total_sec": 2.8020017859744257,
+        "acceptance_rate": 0.5783132530120482
+      }
+    },
+    {
+      "prompt_index": 10,
+      "category": "programming",
+      "prompt": "Write only Python code for topological sort.",
+      "baseline_tps": 43.01628510870649,
+      "correctness_first_tps": 20.3004989283975,
+      "native_speculative_tps": 35.291347548743126,
+      "correctness_first_speedup_pct": -52.80741031659035,
+      "native_speculative_speedup_pct": -17.958169889477137,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 358,
+        "candidate_token": 894
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08692937500018161,
+        "draft_generation_sec": 1.6634268339985283,
+        "verification_sec": 0.956071456988866,
+        "correction_sec": 0.4447775870139594,
+        "bookkeeping_sec": 0.00017995900998357683,
+        "rounds": 21,
+        "draft_tokens_proposed": 101,
+        "draft_tokens_accepted": 43,
+        "corrections": 21,
+        "measured_component_total_sec": 3.151385212011519,
+        "acceptance_rate": 0.42574257425742573
+      }
+    },
+    {
+      "prompt_index": 11,
+      "category": "programming",
+      "prompt": "Write only Python code for detecting a cycle in a linked list.",
+      "baseline_tps": 7.597369979076218,
+      "correctness_first_tps": 6.643026344711926,
+      "native_speculative_tps": 30.075321061678917,
+      "correctness_first_speedup_pct": -12.561500058475927,
+      "native_speculative_speedup_pct": 295.8648998865242,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 476
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08195041700673755,
+        "draft_generation_sec": 7.623689211017336,
+        "verification_sec": 1.408428125003411,
+        "correction_sec": 0.5088400840104441,
+        "bookkeeping_sec": 0.005798664991743863,
+        "rounds": 21,
+        "draft_tokens_proposed": 104,
+        "draft_tokens_accepted": 44,
+        "corrections": 20,
+        "measured_component_total_sec": 9.628706502029672,
+        "acceptance_rate": 0.4230769230769231
+      }
+    },
+    {
+      "prompt_index": 12,
+      "category": "programming",
+      "prompt": "Write only Python code for an LRU cache using standard library features.",
+      "baseline_tps": 37.54216070443038,
+      "correctness_first_tps": 16.241284926206184,
+      "native_speculative_tps": 22.888197579963535,
+      "correctness_first_speedup_pct": -56.73854508781766,
+      "native_speculative_speedup_pct": -39.03335037063415,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 721
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08311825000419049,
+        "draft_generation_sec": 2.272933042018849,
+        "verification_sec": 1.0096141639878624,
+        "correction_sec": 0.56858879198262,
+        "bookkeeping_sec": 0.0009706240307423286,
+        "rounds": 23,
+        "draft_tokens_proposed": 112,
+        "draft_tokens_accepted": 42,
+        "corrections": 22,
+        "measured_component_total_sec": 3.935224872024264,
+        "acceptance_rate": 0.375
+      }
+    },
+    {
+      "prompt_index": 13,
+      "category": "programming",
+      "prompt": "Write only shell script to count file extensions recursively in a directory.",
+      "baseline_tps": 38.05697911963089,
+      "correctness_first_tps": 19.696699547237937,
+      "native_speculative_tps": 26.627874103477478,
+      "correctness_first_speedup_pct": -48.24418542175406,
+      "native_speculative_speedup_pct": -30.031561307654997,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 8894
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08236808400397422,
+        "draft_generation_sec": 1.6869306689841324,
+        "verification_sec": 1.0566753309976775,
+        "correction_sec": 0.42165125002065906,
+        "bookkeeping_sec": 0.00037458301085280254,
+        "rounds": 19,
+        "draft_tokens_proposed": 95,
+        "draft_tokens_accepted": 45,
+        "corrections": 19,
+        "measured_component_total_sec": 3.247999917017296,
+        "acceptance_rate": 0.47368421052631576
+      }
+    },
+    {
+      "prompt_index": 14,
+      "category": "programming",
+      "prompt": "Write only pseudocode for Dijkstra's algorithm.",
+      "baseline_tps": 35.70257662398053,
+      "correctness_first_tps": 19.044951241045002,
+      "native_speculative_tps": 35.796587562442234,
+      "correctness_first_speedup_pct": -46.65664766544333,
+      "native_speculative_speedup_pct": 0.26331695734969074,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 448
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.07993545800127322,
+        "draft_generation_sec": 1.7781991679803468,
+        "verification_sec": 1.0822900829880382,
+        "correction_sec": 0.4161177489804686,
+        "bookkeeping_sec": 0.0018007900071097538,
+        "rounds": 18,
+        "draft_tokens_proposed": 90,
+        "draft_tokens_accepted": 47,
+        "corrections": 17,
+        "measured_component_total_sec": 3.3583432479572366,
+        "acceptance_rate": 0.5222222222222223
+      }
+    },
+    {
+      "prompt_index": 15,
+      "category": "systems_ml",
+      "prompt": "In 5 short sentences, discuss the tradeoff between latency and throughput in serving LLMs.",
+      "baseline_tps": 42.43440666602848,
+      "correctness_first_tps": 14.74819176689763,
+      "native_speculative_tps": 23.602280917479096,
+      "correctness_first_speedup_pct": -65.24473198607365,
+      "native_speculative_speedup_pct": -44.379378028692294,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 9926,
+        "candidate_token": 13
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08010091699543409,
+        "draft_generation_sec": 2.8233692499852623,
+        "verification_sec": 0.6904858759808121,
+        "correction_sec": 0.7383072930024355,
+        "bookkeeping_sec": 0.00017837099585449323,
+        "rounds": 34,
+        "draft_tokens_proposed": 160,
+        "draft_tokens_accepted": 31,
+        "corrections": 33,
+        "measured_component_total_sec": 4.3324417069597985,
+        "acceptance_rate": 0.19375
+      }
+    },
+    {
+      "prompt_index": 16,
+      "category": "systems_ml",
+      "prompt": "In 5 short sentences, explain the difference between RAM bandwidth limits and compute limits in GPU inference.",
+      "baseline_tps": 40.71973296148094,
+      "correctness_first_tps": 20.054310884207606,
+      "native_speculative_tps": 34.983154209225255,
+      "correctness_first_speedup_pct": -50.75038703427134,
+      "native_speculative_speedup_pct": -14.08795769285186,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 1849
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08162291699409252,
+        "draft_generation_sec": 1.6557986680199974,
+        "verification_sec": 1.0323367940072785,
+        "correction_sec": 0.419168833985168,
+        "bookkeeping_sec": 9.795898949960247e-05,
+        "rounds": 19,
+        "draft_tokens_proposed": 95,
+        "draft_tokens_accepted": 46,
+        "corrections": 18,
+        "measured_component_total_sec": 3.189025171996036,
+        "acceptance_rate": 0.4842105263157895
+      }
+    },
+    {
+      "prompt_index": 17,
+      "category": "systems_ml",
+      "prompt": "In 5 short sentences, explain why overfitting happens in machine learning.",
+      "baseline_tps": 41.15235709980278,
+      "correctness_first_tps": 18.025662771615778,
+      "native_speculative_tps": 34.16707901838233,
+      "correctness_first_speedup_pct": -56.197739225726714,
+      "native_speculative_speedup_pct": -16.97418707871273,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 6065,
+        "candidate_token": 311
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08491912499448517,
+        "draft_generation_sec": 2.0350367499995627,
+        "verification_sec": 0.8842987070020172,
+        "correction_sec": 0.5423955419973936,
+        "bookkeeping_sec": 0.00013645898434333503,
+        "rounds": 25,
+        "draft_tokens_proposed": 119,
+        "draft_tokens_accepted": 40,
+        "corrections": 24,
+        "measured_component_total_sec": 3.546786582977802,
+        "acceptance_rate": 0.33613445378151263
+      }
+    },
+    {
+      "prompt_index": 18,
+      "category": "systems_ml",
+      "prompt": "In 5 short sentences, describe how gradient descent behaves near a saddle point.",
+      "baseline_tps": 41.72853614916178,
+      "correctness_first_tps": 17.41330362950833,
+      "native_speculative_tps": 33.198856351288214,
+      "correctness_first_speedup_pct": -58.27003476167203,
+      "native_speculative_speedup_pct": -20.440879515599562,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 15102
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08264800000324612,
+        "draft_generation_sec": 2.025272165024944,
+        "verification_sec": 1.0150169580156216,
+        "correction_sec": 0.5481932100010454,
+        "bookkeeping_sec": 0.0003233319803257473,
+        "rounds": 23,
+        "draft_tokens_proposed": 114,
+        "draft_tokens_accepted": 42,
+        "corrections": 22,
+        "measured_component_total_sec": 3.671453665025183,
+        "acceptance_rate": 0.3684210526315789
+      }
+    },
+    {
+      "prompt_index": 19,
+      "category": "systems_ml",
+      "prompt": "In 6 short sentences, compare supervised, unsupervised, and reinforcement learning.",
+      "baseline_tps": 39.165224834053106,
+      "correctness_first_tps": 18.80112335552087,
+      "native_speculative_tps": 35.4411013148681,
+      "correctness_first_speedup_pct": -51.995364675721724,
+      "native_speculative_speedup_pct": -9.508750517747522,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 8886,
+        "candidate_token": 61824
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.09187787499831757,
+        "draft_generation_sec": 1.8469700010027736,
+        "verification_sec": 1.0014782070211368,
+        "correction_sec": 0.4603112929908093,
+        "bookkeeping_sec": 0.0004178329836577177,
+        "rounds": 21,
+        "draft_tokens_proposed": 102,
+        "draft_tokens_accepted": 43,
+        "corrections": 21,
+        "measured_component_total_sec": 3.401055208996695,
+        "acceptance_rate": 0.4215686274509804
+      }
+    },
+    {
+      "prompt_index": 20,
+      "category": "systems_ml",
+      "prompt": "In 4 short sentences, explain why recursion works in divide-and-conquer algorithms.",
+      "baseline_tps": 42.51753640791278,
+      "correctness_first_tps": 19.436997249196306,
+      "native_speculative_tps": 34.91022945232589,
+      "correctness_first_speedup_pct": -54.284751913380006,
+      "native_speculative_speedup_pct": -17.892163089136837,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 803
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08425870799692348,
+        "draft_generation_sec": 1.8212712920139893,
+        "verification_sec": 0.9200840830089874,
+        "correction_sec": 0.46406845601450186,
+        "bookkeeping_sec": 0.0001251239955308847,
+        "rounds": 22,
+        "draft_tokens_proposed": 105,
+        "draft_tokens_accepted": 43,
+        "corrections": 21,
+        "measured_component_total_sec": 3.289807663029933,
+        "acceptance_rate": 0.4095238095238095
+      }
+    },
+    {
+      "prompt_index": 21,
+      "category": "systems_ml",
+      "prompt": "In 6 short sentences, describe how compilers move from source code to machine code.",
+      "baseline_tps": 11.027383880249523,
+      "correctness_first_tps": 17.169215142591657,
+      "native_speculative_tps": 33.177666865386946,
+      "correctness_first_speedup_pct": 55.69617716258517,
+      "native_speculative_speedup_pct": 200.86616395761325,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 13
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08436220799922012,
+        "draft_generation_sec": 2.2001462100088247,
+        "verification_sec": 0.8872240830023657,
+        "correction_sec": 0.5520120429937379,
+        "bookkeeping_sec": 0.00012912401871290058,
+        "rounds": 25,
+        "draft_tokens_proposed": 122,
+        "draft_tokens_accepted": 40,
+        "corrections": 24,
+        "measured_component_total_sec": 3.7238736680228612,
+        "acceptance_rate": 0.32786885245901637
+      }
+    },
+    {
+      "prompt_index": 22,
+      "category": "math",
+      "prompt": "Solve step by step: if 3x + 7 = 22, what is x?",
+      "baseline_tps": 42.15362309761073,
+      "correctness_first_tps": 24.327528747868545,
+      "native_speculative_tps": 41.010527147950924,
+      "correctness_first_speedup_pct": -42.28840379500516,
+      "native_speculative_speedup_pct": -2.7117383172802545,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 2014,
+        "candidate_token": 1795
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08099766699888278,
+        "draft_generation_sec": 1.0755466660048114,
+        "verification_sec": 1.2121938339914777,
+        "correction_sec": 0.2600469579847413,
+        "bookkeeping_sec": 5.4750009439885616e-05,
+        "rounds": 12,
+        "draft_tokens_proposed": 60,
+        "draft_tokens_accepted": 52,
+        "corrections": 12,
+        "measured_component_total_sec": 2.628839874989353,
+        "acceptance_rate": 0.8666666666666667
+      }
+    },
+    {
+      "prompt_index": 23,
+      "category": "math",
+      "prompt": "Solve step by step: a rectangle has perimeter 30 and length 8, find width.",
+      "baseline_tps": 39.59739249715236,
+      "correctness_first_tps": 23.27547801104516,
+      "native_speculative_tps": 41.68126482421995,
+      "correctness_first_speedup_pct": -41.21966992468251,
+      "native_speculative_speedup_pct": 5.262650380874079,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 6771,
+        "candidate_token": 576
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08164045800367603,
+        "draft_generation_sec": 1.1767908729816554,
+        "verification_sec": 1.22868512399873,
+        "correction_sec": 0.26132737598527456,
+        "bookkeeping_sec": 0.00010895799641730264,
+        "rounds": 12,
+        "draft_tokens_proposed": 58,
+        "draft_tokens_accepted": 53,
+        "corrections": 11,
+        "measured_component_total_sec": 2.7485527889657533,
+        "acceptance_rate": 0.9137931034482759
+      }
+    },
+    {
+      "prompt_index": 24,
+      "category": "math",
+      "prompt": "Find the derivative of x^3 * sin(x) and explain each rule used briefly.",
+      "baseline_tps": 42.13758135213014,
+      "correctness_first_tps": 20.865131658139763,
+      "native_speculative_tps": 37.623592944227035,
+      "correctness_first_speedup_pct": -50.483319192488516,
+      "native_speculative_speedup_pct": -10.712500013185766,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 2014,
+        "candidate_token": 279
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08925737500248943,
+        "draft_generation_sec": 1.5278385420169798,
+        "verification_sec": 1.0353987910057185,
+        "correction_sec": 0.41358591600874206,
+        "bookkeeping_sec": 8.724701183382422e-05,
+        "rounds": 19,
+        "draft_tokens_proposed": 86,
+        "draft_tokens_accepted": 46,
+        "corrections": 18,
+        "measured_component_total_sec": 3.0661678710457636,
+        "acceptance_rate": 0.5348837209302325
+      }
+    },
+    {
+      "prompt_index": 25,
+      "category": "math",
+      "prompt": "Evaluate the integral of 2x from 0 to 5 and explain the steps briefly.",
+      "baseline_tps": 42.67659136406957,
+      "correctness_first_tps": 21.455572883924027,
+      "native_speculative_tps": 42.32643501527634,
+      "correctness_first_speedup_pct": -49.725195480377614,
+      "native_speculative_speedup_pct": -0.8204880886715782,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 2014,
+        "candidate_token": 1493
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0802421249973122,
+        "draft_generation_sec": 1.0900596669962397,
+        "verification_sec": 1.5626307919956162,
+        "correction_sec": 0.24781237498973496,
+        "bookkeeping_sec": 0.0008964170119725168,
+        "rounds": 11,
+        "draft_tokens_proposed": 55,
+        "draft_tokens_accepted": 54,
+        "corrections": 10,
+        "measured_component_total_sec": 2.9816413759908755,
+        "acceptance_rate": 0.9818181818181818
+      }
+    },
+    {
+      "prompt_index": 26,
+      "category": "math",
+      "prompt": "A fair coin is flipped 10 times. What is the probability of exactly 6 heads? Show the key steps briefly.",
+      "baseline_tps": 42.86609161306078,
+      "correctness_first_tps": 21.889479963705224,
+      "native_speculative_tps": 40.24582233802493,
+      "correctness_first_speedup_pct": -48.93520929947398,
+      "native_speculative_speedup_pct": -6.112685286748853,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 2014,
+        "candidate_token": 18927
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08076633299788227,
+        "draft_generation_sec": 1.3239985839827568,
+        "verification_sec": 1.1908114180041593,
+        "correction_sec": 0.3250814579951111,
+        "bookkeeping_sec": 9.395900269737467e-05,
+        "rounds": 14,
+        "draft_tokens_proposed": 67,
+        "draft_tokens_accepted": 51,
+        "corrections": 13,
+        "measured_component_total_sec": 2.920751751982607,
+        "acceptance_rate": 0.7611940298507462
+      }
+    },
+    {
+      "prompt_index": 27,
+      "category": "math",
+      "prompt": "In 4 short sentences, explain why floating-point equality is dangerous for money calculations.",
+      "baseline_tps": 42.12625699982504,
+      "correctness_first_tps": 17.832868958929904,
+      "native_speculative_tps": 33.72377087018673,
+      "correctness_first_speedup_pct": -57.66804309482334,
+      "native_speculative_speedup_pct": -19.945959427805803,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 653
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08432087499386398,
+        "draft_generation_sec": 2.12125733497669,
+        "verification_sec": 0.8575701639929321,
+        "correction_sec": 0.5245167090033647,
+        "bookkeeping_sec": 0.00014066802395973355,
+        "rounds": 25,
+        "draft_tokens_proposed": 124,
+        "draft_tokens_accepted": 39,
+        "corrections": 25,
+        "measured_component_total_sec": 3.5878057509908103,
+        "acceptance_rate": 0.31451612903225806
+      }
+    },
+    {
+      "prompt_index": 28,
+      "category": "math",
+      "prompt": "In 4 short sentences, describe a regex strategy for a simple email-like validator.",
+      "baseline_tps": 44.12766246650873,
+      "correctness_first_tps": 21.418331983781837,
+      "native_speculative_tps": 37.71525317042656,
+      "correctness_first_speedup_pct": -51.462799553369585,
+      "native_speculative_speedup_pct": -14.531495523808802,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 64
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08417683299921919,
+        "draft_generation_sec": 1.5250225819763727,
+        "verification_sec": 0.9813047079878743,
+        "correction_sec": 0.3958776270010276,
+        "bookkeeping_sec": 6.833298539277166e-05,
+        "rounds": 19,
+        "draft_tokens_proposed": 93,
+        "draft_tokens_accepted": 46,
+        "corrections": 18,
+        "measured_component_total_sec": 2.9864500829498866,
+        "acceptance_rate": 0.4946236559139785
+      }
+    },
+    {
+      "prompt_index": 29,
+      "category": "data_sql",
+      "prompt": "Write only SQL to find the second-highest salary from an employee table.",
+      "baseline_tps": 41.56097502354875,
+      "correctness_first_tps": 21.99463722697488,
+      "native_speculative_tps": 40.100268415321906,
+      "correctness_first_speedup_pct": -47.078630338887486,
+      "native_speculative_speedup_pct": -3.5146110200715897,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 62197,
+        "candidate_token": 1565
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0819469170019147,
+        "draft_generation_sec": 1.3300750420094118,
+        "verification_sec": 1.1358926270040683,
+        "correction_sec": 0.358552913996391,
+        "bookkeeping_sec": 0.000249580989475362,
+        "rounds": 16,
+        "draft_tokens_proposed": 76,
+        "draft_tokens_accepted": 49,
+        "corrections": 15,
+        "measured_component_total_sec": 2.9067170810012612,
+        "acceptance_rate": 0.6447368421052632
+      }
+    },
+    {
+      "prompt_index": 30,
+      "category": "data_sql",
+      "prompt": "Write only SQL to compute a 7-day rolling average from a daily_sales table.",
+      "baseline_tps": 41.84653500698788,
+      "correctness_first_tps": 18.155643366128185,
+      "native_speculative_tps": 33.38786756321639,
+      "correctness_first_speedup_pct": -56.61374743907373,
+      "native_speculative_speedup_pct": -20.213543229705856,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 11457
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.09042120799858822,
+        "draft_generation_sec": 2.044066542010114,
+        "verification_sec": 0.8614918339881115,
+        "correction_sec": 0.5278775399783626,
+        "bookkeeping_sec": 0.00010454199218656868,
+        "rounds": 25,
+        "draft_tokens_proposed": 125,
+        "draft_tokens_accepted": 40,
+        "corrections": 24,
+        "measured_component_total_sec": 3.523961665967363,
+        "acceptance_rate": 0.32
+      }
+    },
+    {
+      "prompt_index": 31,
+      "category": "data_sql",
+      "prompt": "Write only SQL to find duplicate email addresses in a users table.",
+      "baseline_tps": 8.636680281406681,
+      "correctness_first_tps": 20.353854139395413,
+      "native_speculative_tps": 38.09241989110002,
+      "correctness_first_speedup_pct": 135.6675652705801,
+      "native_speculative_speedup_pct": 341.05395418082793,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 2551
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08703049999894574,
+        "draft_generation_sec": 1.6611471670184983,
+        "verification_sec": 0.9994124580043717,
+        "correction_sec": 0.39498695801739814,
+        "bookkeeping_sec": 0.00037641300150426105,
+        "rounds": 19,
+        "draft_tokens_proposed": 91,
+        "draft_tokens_accepted": 46,
+        "corrections": 18,
+        "measured_component_total_sec": 3.142953496040718,
+        "acceptance_rate": 0.5054945054945055
+      }
+    },
+    {
+      "prompt_index": 32,
+      "category": "data_sql",
+      "prompt": "Write only SQL to rank products by revenue within each category.",
+      "baseline_tps": 43.8543922157363,
+      "correctness_first_tps": 17.690665990012857,
+      "native_speculative_tps": 33.337347115088626,
+      "correctness_first_speedup_pct": -59.6604465455004,
+      "native_speculative_speedup_pct": -23.98173722009499,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 516
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0791477919992758,
+        "draft_generation_sec": 2.1522157070212415,
+        "verification_sec": 0.8079543350031599,
+        "correction_sec": 0.5772044570185244,
+        "bookkeeping_sec": 0.00011083000572398305,
+        "rounds": 27,
+        "draft_tokens_proposed": 135,
+        "draft_tokens_accepted": 37,
+        "corrections": 27,
+        "measured_component_total_sec": 3.6166331210479257,
+        "acceptance_rate": 0.2740740740740741
+      }
+    },
+    {
+      "prompt_index": 33,
+      "category": "data_sql",
+      "prompt": "Write only SQL to return customers with no orders in the last 90 days.",
+      "baseline_tps": 42.700932998188165,
+      "correctness_first_tps": 22.090668967254466,
+      "native_speculative_tps": 36.6286451314275,
+      "correctness_first_speedup_pct": -48.26654263457946,
+      "native_speculative_speedup_pct": -14.220503957181263,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 358,
+        "candidate_token": 1865
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08458562499436084,
+        "draft_generation_sec": 1.455690960996435,
+        "verification_sec": 0.9898634179844521,
+        "correction_sec": 0.36586983301094733,
+        "bookkeeping_sec": 6.862502050353214e-05,
+        "rounds": 18,
+        "draft_tokens_proposed": 88,
+        "draft_tokens_accepted": 47,
+        "corrections": 17,
+        "measured_component_total_sec": 2.896078462006699,
+        "acceptance_rate": 0.5340909090909091
+      }
+    },
+    {
+      "prompt_index": 34,
+      "category": "data_sql",
+      "prompt": "Write only SQL to compute month-over-month growth from a revenue table.",
+      "baseline_tps": 44.53513579486357,
+      "correctness_first_tps": 20.676803188970062,
+      "native_speculative_tps": 36.92590050471566,
+      "correctness_first_speedup_pct": -53.571931869230305,
+      "native_speculative_speedup_pct": -17.085914647700505,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 1565
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08086941700457828,
+        "draft_generation_sec": 1.6200184140034253,
+        "verification_sec": 0.9734190849849256,
+        "correction_sec": 0.4196797879994847,
+        "bookkeeping_sec": 0.0001752050156937912,
+        "rounds": 20,
+        "draft_tokens_proposed": 100,
+        "draft_tokens_accepted": 45,
+        "corrections": 19,
+        "measured_component_total_sec": 3.0941619090081076,
+        "acceptance_rate": 0.45
+      }
+    },
+    {
+      "prompt_index": 35,
+      "category": "data_sql",
+      "prompt": "Write only SQL to join orders, customers, and payments into one report query.",
+      "baseline_tps": 44.280728750085586,
+      "correctness_first_tps": 22.127124565891513,
+      "native_speculative_tps": 36.23990334704564,
+      "correctness_first_speedup_pct": -50.02989970925276,
+      "native_speculative_speedup_pct": -18.158746773164623,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 323
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08266337499662768,
+        "draft_generation_sec": 1.4562225409899838,
+        "verification_sec": 0.9882245830012835,
+        "correction_sec": 0.36418308298743796,
+        "bookkeeping_sec": 5.9290017816238105e-05,
+        "rounds": 18,
+        "draft_tokens_proposed": 89,
+        "draft_tokens_accepted": 47,
+        "corrections": 17,
+        "measured_component_total_sec": 2.891352871993149,
+        "acceptance_rate": 0.5280898876404494
+      }
+    },
+    {
+      "prompt_index": 36,
+      "category": "business_econ",
+      "prompt": "In 5 short sentences, explain the difference between inflation and stagflation.",
+      "baseline_tps": 44.904775553870614,
+      "correctness_first_tps": 15.549528378559517,
+      "native_speculative_tps": 31.279091876895514,
+      "correctness_first_speedup_pct": -65.37221668126296,
+      "native_speculative_speedup_pct": -30.343506918610174,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 758,
+        "candidate_token": 279
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08179129200289026,
+        "draft_generation_sec": 2.6623074599847314,
+        "verification_sec": 0.6759286679734942,
+        "correction_sec": 0.6945995019777911,
+        "bookkeeping_sec": 0.00012579002941492945,
+        "rounds": 33,
+        "draft_tokens_proposed": 161,
+        "draft_tokens_accepted": 32,
+        "corrections": 32,
+        "measured_component_total_sec": 4.114752711968322,
+        "acceptance_rate": 0.19875776397515527
+      }
+    },
+    {
+      "prompt_index": 37,
+      "category": "business_econ",
+      "prompt": "In 5 short sentences, explain why price elasticity matters for product strategy.",
+      "baseline_tps": 43.83229773295671,
+      "correctness_first_tps": 16.66519815458808,
+      "native_speculative_tps": 32.2610076826411,
+      "correctness_first_speedup_pct": -61.97963826555728,
+      "native_speculative_speedup_pct": -26.399004042207363,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 8483,
+        "candidate_token": 7479
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08172270800423576,
+        "draft_generation_sec": 2.4126200009923195,
+        "verification_sec": 0.7059812530060299,
+        "correction_sec": 0.6385999150006683,
+        "bookkeeping_sec": 7.946098776301369e-05,
+        "rounds": 31,
+        "draft_tokens_proposed": 149,
+        "draft_tokens_accepted": 34,
+        "corrections": 30,
+        "measured_component_total_sec": 3.8390033379910165,
+        "acceptance_rate": 0.22818791946308725
+      }
+    },
+    {
+      "prompt_index": 38,
+      "category": "business_econ",
+      "prompt": "In 5 short sentences, explain how working capital affects a small business.",
+      "baseline_tps": 42.46840997271305,
+      "correctness_first_tps": 17.05454675979905,
+      "native_speculative_tps": 33.824405262532984,
+      "correctness_first_speedup_pct": -59.841805307151844,
+      "native_speculative_speedup_pct": -20.353963606676206,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 22150,
+        "candidate_token": 1084
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08209104200068396,
+        "draft_generation_sec": 2.253482007996354,
+        "verification_sec": 0.8089149159932276,
+        "correction_sec": 0.6068546650058124,
+        "bookkeeping_sec": 0.00012929001240991056,
+        "rounds": 28,
+        "draft_tokens_proposed": 135,
+        "draft_tokens_accepted": 36,
+        "corrections": 28,
+        "measured_component_total_sec": 3.7514719210084877,
+        "acceptance_rate": 0.26666666666666666
+      }
+    },
+    {
+      "prompt_index": 39,
+      "category": "business_econ",
+      "prompt": "In 5 short sentences, compare gross margin and operating margin.",
+      "baseline_tps": 42.63084729100707,
+      "correctness_first_tps": 20.747479829584904,
+      "native_speculative_tps": 39.19679738112076,
+      "correctness_first_speedup_pct": -51.332236753451625,
+      "native_speculative_speedup_pct": -8.055317048813905,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 42807,
+        "candidate_token": 315
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0800349169949186,
+        "draft_generation_sec": 1.6214865450019715,
+        "verification_sec": 0.9652067939969129,
+        "correction_sec": 0.41653941899130587,
+        "bookkeeping_sec": 0.00029241800075396895,
+        "rounds": 20,
+        "draft_tokens_proposed": 100,
+        "draft_tokens_accepted": 44,
+        "corrections": 20,
+        "measured_component_total_sec": 3.083560092985863,
+        "acceptance_rate": 0.44
+      }
+    },
+    {
+      "prompt_index": 40,
+      "category": "business_econ",
+      "prompt": "In 5 short sentences, explain the main risks in a two-sided marketplace business.",
+      "baseline_tps": 43.38408886706168,
+      "correctness_first_tps": 15.839399869911754,
+      "native_speculative_tps": 29.182094846998517,
+      "correctness_first_speedup_pct": -63.49030189743725,
+      "native_speculative_speedup_pct": -32.73548987874604,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 311
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.084334500003024,
+        "draft_generation_sec": 2.562855918025889,
+        "verification_sec": 0.7087903280189494,
+        "correction_sec": 0.6832321629699436,
+        "bookkeeping_sec": 0.00012795601651305333,
+        "rounds": 32,
+        "draft_tokens_proposed": 155,
+        "draft_tokens_accepted": 32,
+        "corrections": 32,
+        "measured_component_total_sec": 4.039340865034319,
+        "acceptance_rate": 0.2064516129032258
+      }
+    },
+    {
+      "prompt_index": 41,
+      "category": "business_econ",
+      "prompt": "In 5 short sentences, describe when a startup should prioritize growth over profitability.",
+      "baseline_tps": 14.598134455030909,
+      "correctness_first_tps": 15.813126566191324,
+      "native_speculative_tps": 31.533723320649816,
+      "correctness_first_speedup_pct": 8.32292725418553,
+      "native_speculative_speedup_pct": 116.01200768350539,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 264
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08295183399604866,
+        "draft_generation_sec": 2.516431540992926,
+        "verification_sec": 0.7956990399979986,
+        "correction_sec": 0.6497406269845669,
+        "bookkeeping_sec": 0.00015358698146883398,
+        "rounds": 29,
+        "draft_tokens_proposed": 135,
+        "draft_tokens_accepted": 36,
+        "corrections": 28,
+        "measured_component_total_sec": 4.044976628953009,
+        "acceptance_rate": 0.26666666666666666
+      }
+    },
+    {
+      "prompt_index": 42,
+      "category": "business_econ",
+      "prompt": "In 5 short sentences, explain the economic tradeoff between automation and labor costs.",
+      "baseline_tps": 41.81764877042957,
+      "correctness_first_tps": 17.748358640816686,
+      "native_speculative_tps": 31.652756724337564,
+      "correctness_first_speedup_pct": -57.55773181258568,
+      "native_speculative_speedup_pct": -24.30766038974407,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 4354
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0843239169989829,
+        "draft_generation_sec": 2.1177271269843914,
+        "verification_sec": 0.8514761269834707,
+        "correction_sec": 0.5494209169992246,
+        "bookkeeping_sec": 9.874899842543527e-05,
+        "rounds": 26,
+        "draft_tokens_proposed": 126,
+        "draft_tokens_accepted": 38,
+        "corrections": 26,
+        "measured_component_total_sec": 3.603046836964495,
+        "acceptance_rate": 0.30158730158730157
+      }
+    },
+    {
+      "prompt_index": 43,
+      "category": "writing_marketing",
+      "prompt": "Write a short product launch email in under 120 words for a note-taking app.",
+      "baseline_tps": 42.22746351997867,
+      "correctness_first_tps": 20.546642070345285,
+      "native_speculative_tps": 35.84374843303675,
+      "correctness_first_speedup_pct": -51.34294045242795,
+      "native_speculative_speedup_pct": -15.117448586325,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 17450,
+        "candidate_token": 315
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08127745899400907,
+        "draft_generation_sec": 1.623183127012453,
+        "verification_sec": 1.0038742489996366,
+        "correction_sec": 0.4044604999871808,
+        "bookkeeping_sec": 8.983299630926922e-05,
+        "rounds": 19,
+        "draft_tokens_proposed": 95,
+        "draft_tokens_accepted": 46,
+        "corrections": 18,
+        "measured_component_total_sec": 3.112885167989589,
+        "acceptance_rate": 0.4842105263157895
+      }
+    },
+    {
+      "prompt_index": 44,
+      "category": "writing_marketing",
+      "prompt": "Write a press release in under 120 words for a local robotics competition.",
+      "baseline_tps": 39.831931034115826,
+      "correctness_first_tps": 18.817212036468305,
+      "native_speculative_tps": 35.41818872759952,
+      "correctness_first_speedup_pct": -52.75847404849273,
+      "native_speculative_speedup_pct": -11.080914713213275,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 508,
+        "candidate_token": 73606
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0851659159961855,
+        "draft_generation_sec": 1.87435358401126,
+        "verification_sec": 0.9783690399926854,
+        "correction_sec": 0.4618871669736109,
+        "bookkeeping_sec": 0.0001313339962507598,
+        "rounds": 21,
+        "draft_tokens_proposed": 100,
+        "draft_tokens_accepted": 43,
+        "corrections": 21,
+        "measured_component_total_sec": 3.3999070409699925,
+        "acceptance_rate": 0.43
+      }
+    },
+    {
+      "prompt_index": 45,
+      "category": "writing_marketing",
+      "prompt": "Write one persuasive paragraph under 120 words arguing for public libraries.",
+      "baseline_tps": 42.945546686659185,
+      "correctness_first_tps": 19.023229732817832,
+      "native_speculative_tps": 32.785771822951915,
+      "correctness_first_speedup_pct": -55.70383613552345,
+      "native_speculative_speedup_pct": -23.657342023924798,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 3066,
+        "candidate_token": 323
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08550124999601394,
+        "draft_generation_sec": 1.8552897889821907,
+        "verification_sec": 0.9231345829903148,
+        "correction_sec": 0.4990240430124686,
+        "bookkeeping_sec": 0.00014341400674311444,
+        "rounds": 23,
+        "draft_tokens_proposed": 111,
+        "draft_tokens_accepted": 41,
+        "corrections": 23,
+        "measured_component_total_sec": 3.363093078987731,
+        "acceptance_rate": 0.36936936936936937
+      }
+    },
+    {
+      "prompt_index": 46,
+      "category": "writing_marketing",
+      "prompt": "Write a concise cold email in under 120 words for a B2B analytics tool.",
+      "baseline_tps": 42.695871809951456,
+      "correctness_first_tps": 19.28200903762513,
+      "native_speculative_tps": 35.26780051614008,
+      "correctness_first_speedup_pct": -54.838704024001395,
+      "native_speculative_speedup_pct": -17.397633492238608,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 279
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08031091700104298,
+        "draft_generation_sec": 1.7899767919807346,
+        "verification_sec": 1.0130090440288768,
+        "correction_sec": 0.43280458400113275,
+        "bookkeeping_sec": 0.00010612900223350152,
+        "rounds": 20,
+        "draft_tokens_proposed": 100,
+        "draft_tokens_accepted": 45,
+        "corrections": 19,
+        "measured_component_total_sec": 3.3162074660140206,
+        "acceptance_rate": 0.45
+      }
+    },
+    {
+      "prompt_index": 47,
+      "category": "writing_marketing",
+      "prompt": "Write a 6-bullet outline for a talk on edge AI deployment.",
+      "baseline_tps": 44.18390008606668,
+      "correctness_first_tps": 18.857335111718648,
+      "native_speculative_tps": 35.60627140760799,
+      "correctness_first_speedup_pct": -57.32079994073389,
+      "native_speculative_speedup_pct": -19.413471109952173,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 358,
+        "candidate_token": 594
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08182729200052563,
+        "draft_generation_sec": 1.9288834149992908,
+        "verification_sec": 0.8815358720021322,
+        "correction_sec": 0.4995745019768947,
+        "bookkeeping_sec": 8.958200487541035e-05,
+        "rounds": 24,
+        "draft_tokens_proposed": 120,
+        "draft_tokens_accepted": 40,
+        "corrections": 24,
+        "measured_component_total_sec": 3.391910662983719,
+        "acceptance_rate": 0.3333333333333333
+      }
+    },
+    {
+      "prompt_index": 48,
+      "category": "writing_marketing",
+      "prompt": "Write a short FAQ answer in under 100 words about resetting a password.",
+      "baseline_tps": 43.699363946690774,
+      "correctness_first_tps": 17.596937676199964,
+      "native_speculative_tps": 33.31001127694666,
+      "correctness_first_speedup_pct": -59.731821960460074,
+      "native_speculative_speedup_pct": -23.774608441482513,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 3070,
+        "candidate_token": 3552
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08420245900197187,
+        "draft_generation_sec": 2.1307929990216508,
+        "verification_sec": 0.8462988340106676,
+        "correction_sec": 0.5702258760065888,
+        "bookkeeping_sec": 0.00010462501086294651,
+        "rounds": 26,
+        "draft_tokens_proposed": 123,
+        "draft_tokens_accepted": 39,
+        "corrections": 25,
+        "measured_component_total_sec": 3.631624793051742,
+        "acceptance_rate": 0.3170731707317073
+      }
+    },
+    {
+      "prompt_index": 49,
+      "category": "writing_marketing",
+      "prompt": "Write a 5-bullet onboarding checklist for a new software intern.",
+      "baseline_tps": 35.15431946474933,
+      "correctness_first_tps": 13.61276475332737,
+      "native_speculative_tps": 20.26961223757294,
+      "correctness_first_speedup_pct": -61.27712053428471,
+      "native_speculative_speedup_pct": -42.341047853598454,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 37569
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.09750895800243597,
+        "draft_generation_sec": 2.822033046017168,
+        "verification_sec": 1.087232917008805,
+        "correction_sec": 0.6730591269952129,
+        "bookkeeping_sec": 0.0015109980013221502,
+        "rounds": 26,
+        "draft_tokens_proposed": 126,
+        "draft_tokens_accepted": 38,
+        "corrections": 26,
+        "measured_component_total_sec": 4.681345046024944,
+        "acceptance_rate": 0.30158730158730157
+      }
+    },
+    {
+      "prompt_index": 50,
+      "category": "creative",
+      "prompt": "Write a science fiction scene in under 120 words set inside a Dyson sphere.",
+      "baseline_tps": 37.646538415628335,
+      "correctness_first_tps": 12.600668038868916,
+      "native_speculative_tps": 20.833006122242423,
+      "correctness_first_speedup_pct": -66.52901284109043,
+      "native_speculative_speedup_pct": -44.661562526041045,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 56050
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08646087500528665,
+        "draft_generation_sec": 3.3971922080017976,
+        "verification_sec": 0.6946215849820874,
+        "correction_sec": 0.8877394579976681,
+        "bookkeeping_sec": 0.0020919180315104313,
+        "rounds": 36,
+        "draft_tokens_proposed": 172,
+        "draft_tokens_accepted": 29,
+        "corrections": 35,
+        "measured_component_total_sec": 5.06810604401835,
+        "acceptance_rate": 0.1686046511627907
+      }
+    },
+    {
+      "prompt_index": 51,
+      "category": "creative",
+      "prompt": "Write a short dialogue in under 120 words between a skeptical engineer and an optimistic founder.",
+      "baseline_tps": 9.472645549267634,
+      "correctness_first_tps": 12.492993736361477,
+      "native_speculative_tps": 22.693098436029878,
+      "correctness_first_speedup_pct": 31.884948839106066,
+      "native_speculative_speedup_pct": 139.56452627729078,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 4650
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0874983749963576,
+        "draft_generation_sec": 3.300661079993006,
+        "verification_sec": 0.84842658200796,
+        "correction_sec": 0.8614984980085865,
+        "bookkeeping_sec": 0.012077666993718594,
+        "rounds": 33,
+        "draft_tokens_proposed": 159,
+        "draft_tokens_accepted": 31,
+        "corrections": 33,
+        "measured_component_total_sec": 5.1101622019996285,
+        "acceptance_rate": 0.1949685534591195
+      }
+    },
+    {
+      "prompt_index": 52,
+      "category": "creative",
+      "prompt": "Write a story opening in under 120 words about a city where gravity changes every hour.",
+      "baseline_tps": 40.101027445814694,
+      "correctness_first_tps": 15.426620325135616,
+      "native_speculative_tps": 23.46817592541462,
+      "correctness_first_speedup_pct": -61.53061079050812,
+      "native_speculative_speedup_pct": -41.47736998228964,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 11
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08029166699998314,
+        "draft_generation_sec": 2.6033492899878183,
+        "verification_sec": 0.8086132899916265,
+        "correction_sec": 0.649176584003726,
+        "bookkeeping_sec": 0.0005638749935314991,
+        "rounds": 29,
+        "draft_tokens_proposed": 141,
+        "draft_tokens_accepted": 36,
+        "corrections": 28,
+        "measured_component_total_sec": 4.1419947059766855,
+        "acceptance_rate": 0.2553191489361702
+      }
+    },
+    {
+      "prompt_index": 53,
+      "category": "creative",
+      "prompt": "In under 120 words, describe a calm morning at a railway station in literary prose.",
+      "baseline_tps": 41.499513596400874,
+      "correctness_first_tps": 15.914367276311422,
+      "native_speculative_tps": 27.184557496760565,
+      "correctness_first_speedup_pct": -61.65167758088705,
+      "native_speculative_speedup_pct": -34.4942744121266,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 88689,
+        "candidate_token": 13
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08889604200521717,
+        "draft_generation_sec": 2.4597305019706255,
+        "verification_sec": 0.8579271670023445,
+        "correction_sec": 0.6043015839968575,
+        "bookkeeping_sec": 0.0005641689858748578,
+        "rounds": 27,
+        "draft_tokens_proposed": 132,
+        "draft_tokens_accepted": 38,
+        "corrections": 26,
+        "measured_component_total_sec": 4.0114194639609195,
+        "acceptance_rate": 0.2878787878787879
+      }
+    },
+    {
+      "prompt_index": 54,
+      "category": "creative",
+      "prompt": "Write a monologue in under 120 words from the perspective of a retired astronaut.",
+      "baseline_tps": 30.745303990326324,
+      "correctness_first_tps": 11.851682581294144,
+      "native_speculative_tps": 21.72121971018761,
+      "correctness_first_speedup_pct": -61.452055946419826,
+      "native_speculative_speedup_pct": -29.351097920443536,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 358,
+        "candidate_token": 7037
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.10321687499526888,
+        "draft_generation_sec": 3.6378776670317166,
+        "verification_sec": 0.7747411249802099,
+        "correction_sec": 0.857359459005238,
+        "bookkeeping_sec": 0.0028014160052407533,
+        "rounds": 33,
+        "draft_tokens_proposed": 159,
+        "draft_tokens_accepted": 32,
+        "corrections": 32,
+        "measured_component_total_sec": 5.375996542017674,
+        "acceptance_rate": 0.20125786163522014
+      }
+    },
+    {
+      "prompt_index": 55,
+      "category": "creative",
+      "prompt": "Write a fantasy tavern scene in under 120 words with a hidden political tension.",
+      "baseline_tps": 42.09016699325211,
+      "correctness_first_tps": 14.782187642129594,
+      "native_speculative_tps": 23.415976638546972,
+      "correctness_first_speedup_pct": -64.8797125359482,
+      "native_speculative_speedup_pct": -44.36710920557522,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 279
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.07987854199745925,
+        "draft_generation_sec": 2.644441246011411,
+        "verification_sec": 0.8908392539960914,
+        "correction_sec": 0.6879989999870304,
+        "bookkeeping_sec": 0.0007162449837778695,
+        "rounds": 29,
+        "draft_tokens_proposed": 143,
+        "draft_tokens_accepted": 36,
+        "corrections": 28,
+        "measured_component_total_sec": 4.30387428697577,
+        "acceptance_rate": 0.2517482517482518
+      }
+    },
+    {
+      "prompt_index": 56,
+      "category": "creative",
+      "prompt": "Write a noir-style city description in under 120 words during a power outage.",
+      "baseline_tps": 40.673090923472394,
+      "correctness_first_tps": 15.399105721000504,
+      "native_speculative_tps": 22.856056859788325,
+      "correctness_first_speedup_pct": -62.1393275717,
+      "native_speculative_speedup_pct": -43.80545874226116,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 576,
+        "candidate_token": 6686
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.09589995900023496,
+        "draft_generation_sec": 2.50777654198464,
+        "verification_sec": 0.9112962520084693,
+        "correction_sec": 0.6340628730176832,
+        "bookkeeping_sec": 0.0016099169952212833,
+        "rounds": 27,
+        "draft_tokens_proposed": 132,
+        "draft_tokens_accepted": 37,
+        "corrections": 27,
+        "measured_component_total_sec": 4.150645543006249,
+        "acceptance_rate": 0.2803030303030303
+      }
+    },
+    {
+      "prompt_index": 57,
+      "category": "education",
+      "prompt": "Write a Git tutorial introduction in under 120 words for first-year students.",
+      "baseline_tps": 39.2261127051008,
+      "correctness_first_tps": 19.297894119902967,
+      "native_speculative_tps": 34.650062001782544,
+      "correctness_first_speedup_pct": -50.80345007678127,
+      "native_speculative_speedup_pct": -11.665827653432526,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 21120,
+        "candidate_token": 498
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08519054199859966,
+        "draft_generation_sec": 1.7202330410145805,
+        "verification_sec": 1.0778216640028404,
+        "correction_sec": 0.42770604201359674,
+        "bookkeeping_sec": 0.0004588759911712259,
+        "rounds": 19,
+        "draft_tokens_proposed": 93,
+        "draft_tokens_accepted": 46,
+        "corrections": 18,
+        "measured_component_total_sec": 3.3114101650207886,
+        "acceptance_rate": 0.4946236559139785
+      }
+    },
+    {
+      "prompt_index": 58,
+      "category": "education",
+      "prompt": "In 5 short sentences, explain photosynthesis to a 12-year-old.",
+      "baseline_tps": 38.323579907325104,
+      "correctness_first_tps": 14.401096779591269,
+      "native_speculative_tps": 21.87700828797884,
+      "correctness_first_speedup_pct": -62.422360295107325,
+      "native_speculative_speedup_pct": -42.9150190538507,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 16505,
+        "candidate_token": 323
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08544600000459468,
+        "draft_generation_sec": 2.8406994580145692,
+        "verification_sec": 0.8071882160002133,
+        "correction_sec": 0.6962084150145529,
+        "bookkeeping_sec": 0.0015248309791786596,
+        "rounds": 30,
+        "draft_tokens_proposed": 147,
+        "draft_tokens_accepted": 35,
+        "corrections": 29,
+        "measured_component_total_sec": 4.431066920013109,
+        "acceptance_rate": 0.23809523809523808
+      }
+    },
+    {
+      "prompt_index": 59,
+      "category": "education",
+      "prompt": "In 5 short sentences, explain what an API is to a beginner programmer.",
+      "baseline_tps": 36.03391662898647,
+      "correctness_first_tps": 15.287344755050134,
+      "native_speculative_tps": 25.090013274644345,
+      "correctness_first_speedup_pct": -57.57512314730544,
+      "native_speculative_speedup_pct": -30.37111804143602,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 1527,
+        "candidate_token": 2155
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08880991699697915,
+        "draft_generation_sec": 2.647610291001911,
+        "verification_sec": 0.79458071100089,
+        "correction_sec": 0.6506298330277787,
+        "bookkeeping_sec": 0.0003437919731368311,
+        "rounds": 29,
+        "draft_tokens_proposed": 141,
+        "draft_tokens_accepted": 36,
+        "corrections": 28,
+        "measured_component_total_sec": 4.1819745440006955,
+        "acceptance_rate": 0.2553191489361702
+      }
+    },
+    {
+      "prompt_index": 60,
+      "category": "education",
+      "prompt": "In 5 short sentences, explain the concept of opportunity cost to a high-school student.",
+      "baseline_tps": 41.938118840465364,
+      "correctness_first_tps": 17.615837463622526,
+      "native_speculative_tps": 31.406265215556104,
+      "correctness_first_speedup_pct": -57.995642268471734,
+      "native_speculative_speedup_pct": -25.112842244958443,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 47279,
+        "candidate_token": 13
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0801337090015295,
+        "draft_generation_sec": 2.1221337059905636,
+        "verification_sec": 0.8870665810100036,
+        "correction_sec": 0.5424256239930401,
+        "bookkeeping_sec": 0.00025462001940468326,
+        "rounds": 25,
+        "draft_tokens_proposed": 125,
+        "draft_tokens_accepted": 39,
+        "corrections": 25,
+        "measured_component_total_sec": 3.6320142400145414,
+        "acceptance_rate": 0.312
+      }
+    },
+    {
+      "prompt_index": 61,
+      "category": "education",
+      "prompt": "In 5 short sentences, explain how the Internet finds a website from a domain name.",
+      "baseline_tps": 7.31334890939776,
+      "correctness_first_tps": 10.16827010721495,
+      "native_speculative_tps": 31.639362679369224,
+      "correctness_first_speedup_pct": 39.037125579344,
+      "native_speculative_speedup_pct": 332.6248216971049,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 311
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.09243900000001304,
+        "draft_generation_sec": 4.539298249015701,
+        "verification_sec": 1.1016237489820924,
+        "correction_sec": 0.5556639990099939,
+        "bookkeeping_sec": 0.00028962599026272073,
+        "rounds": 16,
+        "draft_tokens_proposed": 80,
+        "draft_tokens_accepted": 48,
+        "corrections": 16,
+        "measured_component_total_sec": 6.289314622998063,
+        "acceptance_rate": 0.6
+      }
+    },
+    {
+      "prompt_index": 62,
+      "category": "education",
+      "prompt": "In 5 short sentences, explain what a database index does.",
+      "baseline_tps": 36.86570998615569,
+      "correctness_first_tps": 14.535032814613619,
+      "native_speculative_tps": 21.418066474137817,
+      "correctness_first_speedup_pct": -60.57302892017539,
+      "native_speculative_speedup_pct": -41.902471206492386,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 821
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0884017499993206,
+        "draft_generation_sec": 2.8020276660172385,
+        "verification_sec": 0.7593052090232959,
+        "correction_sec": 0.7456265430082567,
+        "bookkeeping_sec": 0.001660415029618889,
+        "rounds": 32,
+        "draft_tokens_proposed": 150,
+        "draft_tokens_accepted": 33,
+        "corrections": 31,
+        "measured_component_total_sec": 4.397021583077731,
+        "acceptance_rate": 0.22
+      }
+    },
+    {
+      "prompt_index": 63,
+      "category": "education",
+      "prompt": "In 5 short sentences, explain why unit tests are useful in software projects.",
+      "baseline_tps": 38.967952056078005,
+      "correctness_first_tps": 15.470141840656959,
+      "native_speculative_tps": 27.02225942406245,
+      "correctness_first_speedup_pct": -60.300346760860855,
+      "native_speculative_speedup_pct": -30.655171754534972,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 862
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.09013499999855412,
+        "draft_generation_sec": 2.581970501007163,
+        "verification_sec": 0.8063804179910221,
+        "correction_sec": 0.6542056249745656,
+        "bookkeeping_sec": 0.0008272919949376956,
+        "rounds": 29,
+        "draft_tokens_proposed": 141,
+        "draft_tokens_accepted": 35,
+        "corrections": 29,
+        "measured_component_total_sec": 4.1335188359662425,
+        "acceptance_rate": 0.24822695035460993
+      }
+    },
+    {
+      "prompt_index": 64,
+      "category": "health_policy",
+      "prompt": "In 5 short sentences, explain the difference between a virus and a bacterium.",
+      "baseline_tps": 40.89411250515206,
+      "correctness_first_tps": 19.36207875305893,
+      "native_speculative_tps": 34.4271051832591,
+      "correctness_first_speedup_pct": -52.653138637940636,
+      "native_speculative_speedup_pct": -15.81403024965564,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 425,
+        "candidate_token": 28135
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08467870799358934,
+        "draft_generation_sec": 1.7453389580041403,
+        "verification_sec": 1.00916408199555,
+        "correction_sec": 0.463662497997575,
+        "bookkeeping_sec": 0.0002283750000060536,
+        "rounds": 21,
+        "draft_tokens_proposed": 101,
+        "draft_tokens_accepted": 44,
+        "corrections": 20,
+        "measured_component_total_sec": 3.3030726209908607,
+        "acceptance_rate": 0.43564356435643564
+      }
+    },
+    {
+      "prompt_index": 65,
+      "category": "health_policy",
+      "prompt": "In 5 short sentences, explain herd immunity in simple terms.",
+      "baseline_tps": 41.40761076009973,
+      "correctness_first_tps": 17.43471465535672,
+      "native_speculative_tps": 28.423602048730764,
+      "correctness_first_speedup_pct": -57.89490304966649,
+      "native_speculative_speedup_pct": -31.356575453226398,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 6252,
+        "candidate_token": 311
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0799815829959698,
+        "draft_generation_sec": 2.1694673329911893,
+        "verification_sec": 0.8347982470149873,
+        "correction_sec": 0.5815851270090207,
+        "bookkeeping_sec": 0.00010954399476759136,
+        "rounds": 27,
+        "draft_tokens_proposed": 130,
+        "draft_tokens_accepted": 37,
+        "corrections": 27,
+        "measured_component_total_sec": 3.6659418340059347,
+        "acceptance_rate": 0.2846153846153846
+      }
+    },
+    {
+      "prompt_index": 66,
+      "category": "health_policy",
+      "prompt": "In 5 short sentences, explain why antibiotic resistance is a public-health problem.",
+      "baseline_tps": 42.078126918394695,
+      "correctness_first_tps": 16.398200230586568,
+      "native_speculative_tps": 28.900630192318427,
+      "correctness_first_speedup_pct": -61.029158302628716,
+      "native_speculative_speedup_pct": -31.316737913815384,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 94851,
+        "candidate_token": 973
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08274995900137583,
+        "draft_generation_sec": 2.370920085988473,
+        "verification_sec": 0.807589251009631,
+        "correction_sec": 0.6334757510121563,
+        "bookkeeping_sec": 0.00013141300587449223,
+        "rounds": 29,
+        "draft_tokens_proposed": 143,
+        "draft_tokens_accepted": 35,
+        "corrections": 29,
+        "measured_component_total_sec": 3.8948664600175107,
+        "acceptance_rate": 0.24475524475524477
+      }
+    },
+    {
+      "prompt_index": 67,
+      "category": "health_policy",
+      "prompt": "In 5 short sentences, explain the main tradeoffs in public transit policy.",
+      "baseline_tps": 38.866350538530554,
+      "correctness_first_tps": 7.492611216768913,
+      "native_speculative_tps": 14.09955659991001,
+      "correctness_first_speedup_pct": -80.72211279692691,
+      "native_speculative_speedup_pct": -63.72297268833545,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 7460
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.09398670800146647,
+        "draft_generation_sec": 5.498866170994006,
+        "verification_sec": 0.7559573330145213,
+        "correction_sec": 2.094207335001556,
+        "bookkeeping_sec": 0.015529084004811011,
+        "rounds": 36,
+        "draft_tokens_proposed": 170,
+        "draft_tokens_accepted": 28,
+        "corrections": 36,
+        "measured_component_total_sec": 8.458546631016361,
+        "acceptance_rate": 0.16470588235294117
+      }
+    },
+    {
+      "prompt_index": 68,
+      "category": "health_policy",
+      "prompt": "In 5 short sentences, explain what due process means in a civic context.",
+      "baseline_tps": 36.0418214790584,
+      "correctness_first_tps": 12.121424955531408,
+      "native_speculative_tps": 19.06326113421859,
+      "correctness_first_speedup_pct": -66.36844516147889,
+      "native_speculative_speedup_pct": -47.10794196321339,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 23662,
+        "candidate_token": 3033
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.0885240830029943,
+        "draft_generation_sec": 3.3650976240023738,
+        "verification_sec": 0.9591499570160522,
+        "correction_sec": 0.8442702919783187,
+        "bookkeeping_sec": 0.001724585992633365,
+        "rounds": 30,
+        "draft_tokens_proposed": 144,
+        "draft_tokens_accepted": 35,
+        "corrections": 29,
+        "measured_component_total_sec": 5.258766541992372,
+        "acceptance_rate": 0.24305555555555555
+      }
+    },
+    {
+      "prompt_index": 69,
+      "category": "health_policy",
+      "prompt": "In 5 short sentences, explain why data privacy matters in consumer apps.",
+      "baseline_tps": 34.81584772604403,
+      "correctness_first_tps": 11.886572936428529,
+      "native_speculative_tps": 21.535254157463736,
+      "correctness_first_speedup_pct": -65.85872896170567,
+      "native_speculative_speedup_pct": -38.14525406097101,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 17
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08316254199598916,
+        "draft_generation_sec": 3.3430738340102835,
+        "verification_sec": 1.0899490840238286,
+        "correction_sec": 0.7947208730111015,
+        "bookkeeping_sec": 0.005122835980728269,
+        "rounds": 26,
+        "draft_tokens_proposed": 130,
+        "draft_tokens_accepted": 38,
+        "corrections": 26,
+        "measured_component_total_sec": 5.316029169021931,
+        "acceptance_rate": 0.2923076923076923
+      }
+    },
+    {
+      "prompt_index": 70,
+      "category": "health_policy",
+      "prompt": "In 5 short sentences, explain the difference between a regulation and a law.",
+      "baseline_tps": 36.124953377931526,
+      "correctness_first_tps": 11.6959210376944,
+      "native_speculative_tps": 19.96022094512644,
+      "correctness_first_speedup_pct": -67.62370620846433,
+      "native_speculative_speedup_pct": -44.74672192291327,
+      "correctness_first_mismatch": null,
+      "native_speculative_mismatch": {
+        "token_index": 0,
+        "baseline_token": 220,
+        "candidate_token": 19256
+      },
+      "correctness_first_profile": {
+        "target_prefill_sec": 0.08609262500249315,
+        "draft_generation_sec": 3.606016294004803,
+        "verification_sec": 1.0268303330158233,
+        "correction_sec": 0.5823342120056623,
+        "bookkeeping_sec": 0.0012916680134367198,
+        "rounds": 24,
+        "draft_tokens_proposed": 120,
+        "draft_tokens_accepted": 40,
+        "corrections": 24,
+        "measured_component_total_sec": 5.3025651320422185,
+        "acceptance_rate": 0.3333333333333333
+      }
+    }
+  ]
 }
